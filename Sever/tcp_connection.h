@@ -26,6 +26,7 @@ namespace tcp
 		{
 			_write(payload, std::move(completion_callback));
 		}
+
 	private:
 		connection(boost::asio::io_service &io_service)
 			: _socket(io_service)
@@ -35,8 +36,16 @@ namespace tcp
 		template<typename CompletionCallbackType>
 		void _write(specification::CEIPayload const &payload, CompletionCallbackType completion_callback)
 		{
-			specification::CEIPacket packet;
+			auto packet = _get_packet(payload);
+			
+			boost::system::error_code ec;
+			auto bytes_transferred = boost::asio::write(_socket, boost::asio::buffer(&packet, packet.header.length), ec);
+			completion_callback(shared_from_this(), bytes_transferred, ec);
+		}
 
+		specification::CEIPacket _get_packet(specification::CEIPayload const &payload)
+		{
+			specification::CEIPacket packet;
 			packet.header.version = 0;
 			packet.header.packet_id = _iteration++;
 			packet.header.length = sizeof(specification::CEIPacket);
@@ -44,11 +53,8 @@ namespace tcp
 			packet.payload = payload;
 
 			packet.crc = 0x31415;
-
-			boost::system::error_code ec;
-			size_t bytes_transerred;
-			bytes_transerred = boost::asio::write(_socket, boost::asio::buffer(&packet, packet.header.length), ec);
-			completion_callback(shared_from_this(), bytes_transerred, ec);
+			
+			return packet;
 		}
 	};
 }

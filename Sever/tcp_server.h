@@ -24,7 +24,7 @@ namespace tcp
 		{
 			start_acception();
 		}
-
+		
 		void write(specification::CEIPayload const &payload)
 		{
 			boost::shared_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
@@ -59,6 +59,12 @@ namespace tcp
 		) {
 			if (!error)
 			{
+				auto &socket = connection->get_socket();
+				socket.set_option(boost::asio::ip::tcp::socket::keep_alive(true));
+#ifdef _DEBUG
+				socket.set_option(boost::asio::ip::tcp::socket::debug(true));
+#endif
+				
 				boost::unique_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
 				_connections.emplace(connection.get(), std::move(connection));
 			}
