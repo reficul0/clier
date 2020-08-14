@@ -16,7 +16,7 @@ namespace tcp
 		boost::asio::io_service &_io_service;
 		boost::asio::ip::tcp::acceptor _acceptor;
 		std::unordered_map<boost::shared_ptr<connection>::element_type*, boost::shared_ptr<connection>> _connections;
-		boost::shared_mutex _connections_change;
+		mutable boost::shared_mutex _connections_change;
 	public:
 		server(decltype(_io_service) io_service, unsigned short port)
 			: _io_service(io_service)
@@ -37,7 +37,7 @@ namespace tcp
 					)
 				);
 		}
-		size_t get_connections_count()
+		size_t get_connections_count() const
 		{
 			boost::shared_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
 			return _connections.size();
@@ -46,7 +46,7 @@ namespace tcp
 		void start_acception()
 		{
 			auto connection = tcp::connection::create(_io_service);
-
+			
 			_acceptor.async_accept(
 				connection->get_socket(),
 				boost::bind(&server::handle_connection, this, connection, boost::asio::placeholders::error)
