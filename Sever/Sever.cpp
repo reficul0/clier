@@ -1,20 +1,19 @@
 ﻿#include "pch.h"
 
-#include <fstream>
 #include <iostream>
 #include <random>
 #include <thread>
+#include <mutex>
 
 #include <boost/asio.hpp>
-#include <boost/log/trivial.hpp>
+#include <boost/thread.hpp>
 
-#include "tcp_server.h"
-#include "tcp_client.h"
+#include "../communication/tcp_server.h"
+#include "../protocol/packet_builder.h"
 
 int main()
 {
 	unsigned short port_number{ 12345 };
-
 	srand(time(NULL));
 
 	boost::asio::io_service io_service;
@@ -32,56 +31,31 @@ int main()
 		}
 	};
 
-	tcp::server server{ io_service, port_number };
-	tcp::client client{ io_service };
+	ip::tcp::server server{ io_service, port_number };
 
-	auto host_ip = "127.0.0.1";
-	
-	auto connect_to_client = [host_ip, port_number](tcp::client &client)
+	protocol::packet_builder<protocol::cei::packet> builder;
+	while (true)
 	{
-		while(!client.is_connected())
-			client.connect(host_ip, std::to_string(port_number));
-	};
+		if (!server.get_connections_count())
+		{
+			boost::this_thread::sleep_for(boost::chrono::milliseconds(50));
+			continue;
+		}
+		auto packet = builder.get_packet(
+			protocol::cei::payload{
+				rand() % std::numeric_limits<decltype(protocol::cei::payload::payload)>::max()
+			}
+		);
+		server.write((uint8_t*)&packet, sizeof(packet));
+			std::cout << "Write" << std::endl
+				<< "\tHeader {" << std::endl
+					<< "\t\tVersion " << std::to_string(packet.header.version) << std::endl
+					<< "\t\tLength " << std::to_string(packet.header.length) << std::endl
+					<< "\t\tPacketId " << std::to_string(packet.header.packet_id) << std::endl
+				<< "\t}" << std::endl
+				<< "\tPayload " << std::to_string(packet.payload.payload) << std::endl
+				<< "\tCrc " << std::to_string(packet.crc) << std::endl;
+	}
 	
-	std::thread client_thread{
-		[&client, &connect_to_client]()
-		{
-			std::ofstream output{"client_output.txt"};
-			while (true)
-				if (client.is_connected())
-				{
-					specification::CEIPacket packet;
-					if (client.read((uint8_t*)&packet, sizeof(packet)))
-						output << "Read " << std::endl
-							<< "Header {" << std::endl
-								<< "\tVersion " << std::to_string(packet.header.version) << std::endl
-								<< "\tLength " << std::to_string(packet.header.length) << std::endl
-								<< "\tPacketId " << std::to_string(packet.header.packet_id) << std::endl
-							<< "}" << std::endl
-							<< "Payload " << std::to_string(packet.payload.payload) << std::endl
-							<< "Crc " << std::to_string(packet.crc) << std::endl
-						<< std::endl;
-				}
-				else
-					connect_to_client(client);
-		}
-	};
-
-	std::thread server_thread{
-		[&server]()
-		{
-			while (true)
-				if (server.get_connections_count())
-				{
-					auto payload = specification::CEIPayload{
-							rand() % std::numeric_limits<decltype(specification::CEIPayload::payload)>::max()
-					};
-					server.write(payload);
-				}
-		}
-	};
-
-	getchar();
-
 	return EXIT_SUCCESS;
 }
