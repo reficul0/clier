@@ -11,7 +11,6 @@ namespace tcp
 		: public boost::enable_shared_from_this<connection>
 	{
 		boost::asio::ip::tcp::socket _socket;
-		std::atomic<size_t> _iteration{ 0 };
 	public:
 		static boost::shared_ptr<connection> create(boost::asio::io_service &io_service)
 		{
@@ -22,10 +21,8 @@ namespace tcp
 			return _socket;
 		}
 		template<typename CompletionCallbackType>
-		void write(specification::CEIPayload const &payload, CompletionCallbackType completion_callback)
+		void write(specification::CEIPacket const &packet, CompletionCallbackType completion_callback)
 		{
-			auto packet = _get_packet(payload);
-
 			boost::system::error_code ec;
 			auto bytes_transferred = boost::asio::write(_socket, boost::asio::buffer(&packet, packet.header.length), ec);
 			completion_callback(shared_from_this(), bytes_transferred, ec);
@@ -54,20 +51,6 @@ namespace tcp
 		connection(boost::asio::io_service &io_service)
 			: _socket(io_service)
 		{
-		}
-
-		specification::CEIPacket _get_packet(specification::CEIPayload const &payload)
-		{
-			specification::CEIPacket packet;
-			packet.header.version = 0;
-			packet.header.packet_id = _iteration++;
-			packet.header.length = sizeof(specification::CEIPacket);
-
-			packet.payload = payload;
-
-			packet.crc = 0x31415;
-			
-			return packet;
 		}
 	};
 }

@@ -17,6 +17,7 @@ namespace tcp
 		boost::asio::ip::tcp::acceptor _acceptor;
 		std::unordered_map<boost::shared_ptr<connection>::element_type*, boost::shared_ptr<connection>> _connections;
 		mutable boost::shared_mutex _connections_change;
+		std::atomic<size_t> _iteration{ 0 };
 	public:
 		server(decltype(_io_service) io_service, unsigned short port)
 			: _io_service(io_service)
@@ -27,10 +28,11 @@ namespace tcp
 		
 		void write(specification::CEIPayload const &payload)
 		{
+			auto packet = _get_packet(payload);
 			boost::shared_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
 			for (auto &connected : _connections)
 				connected.second->write(
-					payload, 
+					packet,
 					boost::bind(
 						&server::handle_writing_completion, this,
 						boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3 
@@ -84,6 +86,20 @@ namespace tcp
 				if (connection_iter != _connections.end())
 					_connections.erase(connection_iter);
 			}
+		}
+
+		specification::CEIPacket _get_packet(specification::CEIPayload const &payload)
+		{
+			specification::CEIPacket packet;
+			packet.header.version = 0;
+			packet.header.packet_id = _iteration++;
+			packet.header.length = sizeof(specification::CEIPacket);
+
+			packet.payload = payload;
+
+			packet.crc = 0x31415;
+
+			return packet;
 		}
 	};
 }
