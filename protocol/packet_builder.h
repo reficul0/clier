@@ -15,18 +15,21 @@ namespace protocol
 	{
 		std::atomic<size_t> _iteration{ 0 };
 	public:
-		cei::packet get_packet(cei::payload const &payload)
+		std::vector<uint8_t> get_packet(cei::payload const &payload)
 		{
-			cei::packet packet;
-			packet.header.version = 0;
-			packet.header.packet_id = _iteration++;
-			packet.header.length = sizeof(cei::packet);
+			std::vector<uint8_t> packet_bytes;
+			packet_bytes.resize(sizeof(cei::packet));
+			cei::packet* packet = (cei::packet*)&packet_bytes[0];
+			
+			packet->header.version = 0;
+			packet->header.packet_id = _iteration++;
+			packet->header.length = sizeof(cei::packet);
 
-			packet.payload = payload;
+			packet->payload = payload;
 
-			packet.crc = 0x31415;
+			packet->crc = 0x314;
 
-			return packet;
+			return std::move(packet_bytes);
 		}
 		
 		void check_accepted_packet(cei::packet const &packet)
@@ -46,7 +49,7 @@ namespace protocol
 					+ ". Expected \"" + std::to_string(sizeof(cei::packet)) + "\""
 			};
 			
-			if(packet.crc != 0x31415)
+			if(packet.crc != 0x314)
 				throw std::logic_error{ "Uncorrect packet crc value \"" + std::to_string(packet.crc) + "\"" };
 			
 			++_iteration;

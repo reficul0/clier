@@ -73,7 +73,7 @@ namespace ip
 			void _handle_reading_completion(
 				boost::shared_ptr<connection> connection,
 				std::size_t bytes_transferred,
-				const boost::system::error_code& error
+				boost::system::error_code error
 			) {
 				if (error)
 				{

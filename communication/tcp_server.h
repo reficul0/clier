@@ -1,11 +1,13 @@
 #pragma once
 
+#include <future>
 #include <unordered_map>
 
 #include <boost/asio.hpp>
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/thread/locks.hpp>
 #include <boost/bind.hpp>
+#include <boost/signals2.hpp>
 
 #include "tcp_connection.h"
 
@@ -20,11 +22,13 @@ namespace ip
 			std::unordered_map<boost::shared_ptr<connection>::element_type*, boost::shared_ptr<connection>> _connections;
 			mutable boost::shared_mutex _connections_change;
 		public:
+			boost::signals2::signal<void(connection*)> on_connected;
+			boost::signals2::signal<void(connection*)> on_disconnected;
+			
 			server(decltype(_io_service) io_service, unsigned short port)
 				: _io_service(io_service)
 				, _acceptor(io_service, boost::asio::ip::tcp::endpoint{ boost::asio::ip::tcp::v4(), port })
 			{
-				start_acception();
 			}
 
 			void write(uint8_t const *bytes, size_t size)
@@ -35,30 +39,47 @@ namespace ip
 						bytes,
 						size,
 						boost::bind(
-							&server::handle_writing_completion, this,
+							&server::_handle_writing_completion, this,
 							boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3
 						)
 					);
+			}
+			void write(std::function<std::vector<uint8_t>(connection*)> get_packet_for_connection)
+			{
+				boost::shared_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
+				for (auto &connection : _connections)
+				{
+					auto packet = get_packet_for_connection(connection.second.get());
+					connection.second->write(
+						&packet[0],
+						packet.size(),
+						boost::bind(
+							&server::_handle_writing_completion, this,
+							boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3
+						)
+					);
+
+				}
 			}
 			size_t get_connections_count() const
 			{
 				boost::shared_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
 				return _connections.size();
 			}
-		private:
+
 			void start_acception()
 			{
 				auto connection = connection::create(_io_service);
 
 				_acceptor.async_accept(
 					connection->get_socket(),
-					boost::bind(&server::handle_connection, this, connection, boost::asio::placeholders::error)
+					boost::bind(&server::_handle_connection, this, connection, boost::asio::placeholders::error)
 				);
 			}
-
-			void handle_connection(
+		private:
+			void _handle_connection(
 				boost::shared_ptr<connection> connection,
-				boost::system::error_code const &error
+				boost::system::error_code error
 			) {
 				if (!error)
 				{
@@ -67,26 +88,47 @@ namespace ip
 #ifdef _DEBUG
 					socket.set_option(boost::asio::ip::tcp::socket::debug(true));
 #endif
-
+					auto connection_raw_ptr = connection.get();
 					boost::unique_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
-					_connections.emplace(connection.get(), std::move(connection));
+					_connections.emplace(connection_raw_ptr, std::move(connection));
+
+					// todo: есть вероятность зависания, если коллбэк будет слишком долгим
+					on_connected(connection_raw_ptr);
 				}
 
 				start_acception();
 			}
 
-			void handle_writing_completion(
+			void _handle_writing_completion(
 				boost::shared_ptr<connection> connection,
 				std::size_t bytes_transferred,
-				const boost::system::error_code& error
+				boost::system::error_code error
 			) {
 				if (error)
-				{
-					boost::unique_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
-					auto connection_iter = _connections.find(connection.get());
-					if (connection_iter != _connections.end())
-						_connections.erase(connection_iter);
-				}
+					_handle_disconnection(connection, error);
+			}
+
+			void _handle_disconnection(
+				boost::shared_ptr<connection> connection,
+				boost::system::error_code error
+			) {
+				// todo: может быть опасным
+				// асинхронный вызов нужен, чтобы не инвалидировать итераторы, потому что этот дисконнект вызывается во время отправки по всем связям
+				// и даже если отдетаченный поток не сразу удалит связь, то это не смертельно, ибо в запись в неприконнеченную связь только приведет к повторному вызову этого метода
+				// и создаст отдетаченный поток заново, но метод, который мы передаём в поток учитывает, что связь может быть уже удалена
+				std::thread(
+					[connection, this]() {
+						auto connection_raw_ptr = connection.get();
+						boost::unique_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
+						auto connection_iter = _connections.find(connection_raw_ptr);
+						if (connection_iter != _connections.end())
+						{
+							// todo: есть вероятность зависания, если коллбэк будет слишком долгим
+							on_disconnected(connection_raw_ptr);
+							_connections.erase(connection_iter);
+						}
+					}
+				).detach();
 			}
 		};
 	}

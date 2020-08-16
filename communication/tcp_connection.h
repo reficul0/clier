@@ -20,20 +20,25 @@ namespace ip
 			{
 				return _socket;
 			}
-			template<typename CompletionCallbackType>
-			size_t write(uint8_t const *bytes, size_t size, CompletionCallbackType completion_callback)
-			{
+			
+			size_t write(
+				uint8_t const *bytes, 
+				size_t size, 
+				std::function<void(boost::shared_ptr<connection>, size_t, boost::system::error_code)> completion_callback
+			) {
 				boost::system::error_code ec;
-				auto bytes_transferred = boost::asio::write(_socket, boost::asio::buffer(bytes, size), ec);
+				const auto bytes_transferred = boost::asio::write(_socket, boost::asio::buffer(bytes, size), ec);
 				completion_callback(shared_from_this(), bytes_transferred, ec);
 				return bytes_transferred;
 			}
 
-			template<typename CompletionCallbackType>
-			size_t read(uint8_t* bytes, size_t &size, CompletionCallbackType completion_callback)
-			{
+			size_t read(
+				uint8_t* bytes, 
+				size_t &size,
+				std::function<void(boost::shared_ptr<connection>, size_t, boost::system::error_code)> completion_callback
+			) {
 				boost::system::error_code ec;
-				auto bytes_transferred = boost::asio::read(_socket, boost::asio::buffer(bytes, size), ec);
+				const auto bytes_transferred = boost::asio::read(_socket, boost::asio::buffer(bytes, size), ec);
 				completion_callback(shared_from_this(), bytes_transferred, ec);
 				return bytes_transferred;
 			}
