@@ -19,7 +19,7 @@ namespace protocol
 		{
 			std::vector<uint8_t> packet_bytes;
 			packet_bytes.resize(sizeof(cei::packet));
-			cei::packet* packet = (cei::packet*)&packet_bytes[0];
+			cei::packet* packet = (cei::packet*)packet_bytes.data();
 			
 			packet->header.version = 0;
 			packet->header.packet_id = _iteration++;

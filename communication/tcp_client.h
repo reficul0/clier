@@ -71,16 +71,12 @@ namespace ip
 			}
 		private:
 			void _handle_reading_completion(
-				boost::shared_ptr<connection> connection,
+				boost::shared_ptr<connection>,
 				std::size_t bytes_transferred,
 				boost::system::error_code error
 			) {
 				if (error)
-				{
-					boost::unique_lock<decltype(_connection_change)> connection_change_lock{ _connection_change };
-					if (_connection.get() == connection.get())
-						_connection.reset();
-				}
+					_connection.reset();
 			}
 		};
 	}

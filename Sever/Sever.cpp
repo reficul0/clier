@@ -76,13 +76,7 @@ int main(int argc, char *argv[])
 	std::thread io_thread{
 		[&io_service]()
 		{
-			try
-			{
-				io_service.run();
-			}
-			catch (boost::thread_interrupted const&)
-			{
-			}
+			io_service.run();
 		}
 	};
 
@@ -106,7 +100,7 @@ int main(int argc, char *argv[])
 				rand() % std::numeric_limits<decltype(protocol::cei::payload::payload)>::max()
 			}
 		);
-		auto* packet = (protocol::cei::packet*)&packet_bytes[0];
+		auto* packet = (protocol::cei::packet*)packet_bytes.data();
 		
 		std::cout << "Outgoung frame" << std::endl
 			<< "\tHeader {" << std::endl
@@ -126,6 +120,7 @@ int main(int argc, char *argv[])
 			boost::this_thread::sleep_for(wait_for_first_connection_timout_ms);
 			continue;
 		}
+
 		server.write(get_packet_for_connection);
 	}
 	

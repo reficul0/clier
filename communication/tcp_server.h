@@ -51,7 +51,7 @@ namespace ip
 				{
 					auto packet = get_packet_for_connection(connection.second.get());
 					connection.second->write(
-						&packet[0],
+						packet.data(),
 						packet.size(),
 						boost::bind(
 							&server::_handle_writing_completion, this,

@@ -43,13 +43,17 @@ int main(int argc, char *argv[])
 			connect_me.connect(host_ip, std::to_string(port_number));
 	};
 
+	// todo когда сервер отключается надо сброоосить счётчик пакетов
 	protocol::packet_builder<protocol::cei::packet> builder;
 	while (true)
 	{
 		if (!client.is_connected())
 		{
 			connect_to_server(client);
-			boost::this_thread::sleep_for(boost::chrono::milliseconds(50));
+			// todo когда будет continue, мы делаем лишнюю провеку client.is_connected(), хотя мы не коннектились. Надо устранить
+			if (!client.is_connected())
+				// todo customize wait timeout
+				boost::this_thread::sleep_for(boost::chrono::milliseconds(50));
 			continue;
 		}
 		
