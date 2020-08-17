@@ -10,10 +10,28 @@
 #include "../communication/tcp_client.h"
 #include "../protocol/packet_builder.h"
 
-int main()
+int main(int argc, char *argv[])
 {
-	unsigned short port_number{ 12345 };
-	auto host_ip = "127.0.0.1";
+	if (argc < 3)
+	{
+		std::cout << "Usage <host_ip> <port>" << std::endl;
+		return EXIT_SUCCESS;
+	}
+	
+	auto host_ip = argv[1];
+	unsigned short port_number = 0;
+	{
+		auto port_as_string = std::string{ argv[2] };
+		try
+		{
+			port_number = std::stoul(port_as_string);
+		}
+		catch (std::exception const &)
+		{
+			std::cout << "Error: can't cast console arg 2 \"" + port_as_string + "\" to unsigned long." << std::endl;
+			return EXIT_FAILURE;
+		}
+	}
 	
 	boost::asio::io_service io_service;
 
@@ -58,7 +76,7 @@ int main()
 			continue;
 		}
 		
-		std::cout << "Read" << std::endl
+		std::cout << "Incoming frame" << std::endl
 			<< "\tHeader {" << std::endl
 				<< "\t\tVersion " << std::to_string(packet.header.version) << std::endl
 				<< "\t\tLength " << std::to_string(packet.header.length) << std::endl

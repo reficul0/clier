@@ -37,9 +37,38 @@ namespace protocol
 	}
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-	unsigned short port_number{ 12345 };
+	if (argc < 3)
+	{
+		std::cout << "Usage <port> <wait_for_first_connection_timout_milliseconds>" << std::endl;
+		return EXIT_SUCCESS;
+	}
+
+	static auto str_to_ul_and_exit_if_fail = [](std::string str, char const *convert_error_msg)
+	{
+		try
+		{
+			return std::stoul(str);
+		}
+		catch (std::exception const &)
+		{
+			std::cout << convert_error_msg << std::endl;
+			exit(EXIT_FAILURE);
+		}
+	};
+
+	unsigned short const port_number = str_to_ul_and_exit_if_fail(
+		argv[1],
+		"Error: can't cast console arg 1(port_number) to unsigned long."
+	);
+	boost::chrono::milliseconds const wait_for_first_connection_timout_ms{
+		str_to_ul_and_exit_if_fail(
+			argv[2], 
+			"Error: can't cast console arg 2(wait_for_first_connection_timout_ms) to unsigned long."
+		)
+	};
+	
 	srand(time(NULL));
 
 	boost::asio::io_service io_service;
@@ -94,8 +123,7 @@ int main()
 	{
 		if (!server.get_connections_count())
 		{
-			// todo: конфигурирование таймаута ожидания первого соединения
-			boost::this_thread::sleep_for(boost::chrono::milliseconds(50));
+			boost::this_thread::sleep_for(wait_for_first_connection_timout_ms);
 			continue;
 		}
 		server.write(get_packet_for_connection);
