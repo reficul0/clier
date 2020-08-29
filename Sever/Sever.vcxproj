@@ -155,6 +155,7 @@
     <ClInclude Include="..\communication\tcp_connection.h" />
     <ClInclude Include="..\communication\tcp_server.h" />
     <ClInclude Include="..\protocol\cei_packet.h" />
+    <ClInclude Include="..\protocol\connections_guard.h" />
     <ClInclude Include="..\protocol\packet_builder.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>

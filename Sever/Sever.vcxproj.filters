@@ -36,6 +36,9 @@
     <ClInclude Include="..\protocol\packet_builder.h">
       <Filter>Файлы заголовков\protocol</Filter>
     </ClInclude>
+    <ClInclude Include="..\protocol\connections_guard.h">
+      <Filter>Файлы заголовков\protocol</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

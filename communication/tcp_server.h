@@ -77,6 +77,15 @@ namespace ip
 				);
 			}
 		private:
+			void _handle_writing_completion(
+				boost::shared_ptr<connection> connection,
+				std::size_t bytes_transferred,
+				boost::system::error_code error
+			) {
+				if (error)
+					_handle_disconnection_unsafe(connection, error);
+			}
+			
 			void _handle_connection(
 				boost::shared_ptr<connection> connection,
 				boost::system::error_code error
@@ -99,20 +108,11 @@ namespace ip
 				start_acception();
 			}
 
-			void _handle_writing_completion(
-				boost::shared_ptr<connection> connection,
-				std::size_t bytes_transferred,
-				boost::system::error_code error
-			) {
-				if (error)
-					_handle_disconnection(connection, error);
-			}
-
-			void _handle_disconnection(
+			void _handle_disconnection_unsafe(
 				boost::shared_ptr<connection> connection,
 				boost::system::error_code error
 			) {
-				// todo: может быть опасным
+				// todo сделать по аналогии с клиентом, т.к. связь может сейчас считаться не потерянной, хотя она уже потеряна.
 				// асинхронный вызов нужен, чтобы не инвалидировать итераторы, потому что этот дисконнект вызывается во время отправки по всем связям
 				// и даже если отдетаченный поток не сразу удалит связь, то это не смертельно, ибо в запись в неприконнеченную связь только приведет к повторному вызову этого метода
 				// и создаст отдетаченный поток заново, но метод, который мы передаём в поток учитывает, что связь может быть уже удалена.
