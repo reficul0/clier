@@ -19,7 +19,7 @@ namespace ip
 		{
 			boost::asio::io_service &_io_service;
 			boost::asio::ip::tcp::resolver _resolver;
-			std::pair<boost::shared_ptr<tcp::connection>, std::atomic_bool> _connection;
+			std::pair<boost::shared_ptr<tcp::connection>, bool> _connection;
 			mutable boost::shared_mutex _connection_change;
 		public:
 			boost::signals2::signal<void(connection*)> on_connected;
@@ -71,14 +71,14 @@ namespace ip
 				// disconnected while reading
 				if (!_is_connected())
 				{
-					_handle_disconnection_unsafe_last_part();
+					_notify_about_disconnection_and_free_connection_resources();
 					return 0;
 				}
 				
 				return bytes_were_read;
 			}
 
-			// handler must return false if disconnect required
+			// handler must return false if disconnection required
 			void read(size_t count, std::function<bool(connection*, std::vector<uint8_t>)> were_read_from_connection)
 			{
 				boost::unique_lock<decltype(_connection_change)> connection_change_lock{ _connection_change };
@@ -97,22 +97,27 @@ namespace ip
 					)
 				);
 
-				// disconnected while reading
-				if (!_is_connected())
+				data.resize(bytes_were_read);
+				bool const is_disconnection_required = !were_read_from_connection(_connection.first.get(), std::move(data));
+				
+				// disconnection may has started(this is so if this is marked as disconnected)
+				// while reading(reason of it is reading error appearing).
+				if (_is_connected())
 				{
-					were_read_from_connection(_connection.first.get(), {});
-					_handle_disconnection_unsafe_last_part();
+					if (is_disconnection_required)
+						_handle_disconnection_unsafe();
 					return;
 				}
-
-				data.resize(bytes_were_read);
-				if( !were_read_from_connection(_connection.first.get(), std::move(data)) )
-					_handle_disconnection_unsafe();
+				
+				// disconnection already begin(then this is marked as disconnected),
+				// while reading(reason is reading error appearing).
+				// disconnection requires the completion
+				_notify_about_disconnection_and_free_connection_resources();
 			}
 		private:
 			bool _is_connected() const
 			{
-				return (bool)_connection.first && _connection.second;
+				return _connection.second;
 			}
 			
 			void _handle_reading_completion(
@@ -121,7 +126,7 @@ namespace ip
 				boost::system::error_code error
 			) {
 				if(error)
-					_handle_disconnection_unsafe_first_part();
+					_set_connection_state_to_disconnected();
 			}
 
 			void _handle_connection(
@@ -144,14 +149,14 @@ namespace ip
 			}
 			void _handle_disconnection_unsafe()
 			{
-				_handle_disconnection_unsafe_first_part();
-				_handle_disconnection_unsafe_last_part();
+				_set_connection_state_to_disconnected();
+				_notify_about_disconnection_and_free_connection_resources();
 			}
-			void _handle_disconnection_unsafe_first_part()
+			void _set_connection_state_to_disconnected()
 			{
 				_connection.second = false;
 			}
-			void _handle_disconnection_unsafe_last_part()
+			void _notify_about_disconnection_and_free_connection_resources()
 			{
 				on_disconnected(_connection.first.get());
 				_connection.first.reset();
