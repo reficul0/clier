@@ -59,7 +59,9 @@ build_script:
     
     #- .\debug\Tests.exe -xunitxml > tests.xml
 on_failure:
-    - curl -s https://raw.githubusercontent.com/report-ci/scripts/master/upload.py | python - --tool msvc --input build.log 
+    - type build.log
+    - curl -s https://raw.githubusercontent.com/report-ci/scripts/master/upload.py | python - --tool msvc --input build.log
+    
 on_finish:
     - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests.xml))
     - curl -s https://raw.githubusercontent.com/report-ci/scripts/master/upload.py | python
