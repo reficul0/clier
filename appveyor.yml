@@ -48,7 +48,6 @@ environment:
     matrix:
         - TOOLCHAIN: msvc15
 install:
-    - call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
     - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
 before_build:
     - nuget restore c:\src\TcpCommunication.sln
@@ -60,7 +59,7 @@ build_script:
     
     #- .\debug\Tests.exe -xunitxml > tests.xml
 on_failure:
-    - curl -s https://raw.githubusercontent.com/report-ci/scripts/master/upload.py | python - --tool msvc --input c:\src\build.log 
+    - curl -s https://raw.githubusercontent.com/report-ci/scripts/master/upload.py | python - --tool msvc --input build.log 
 on_finish:
     - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests.xml))
     - curl -s https://raw.githubusercontent.com/report-ci/scripts/master/upload.py | python
