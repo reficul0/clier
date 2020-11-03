@@ -56,17 +56,14 @@ build_script:
     - curl -s https://report.ci/annotate.py > annotate.py
     
     - msbuild c:\src\TcpCommunication.sln /m /property:Configuration=Release /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" > build.log
-    
-    #- .\debug\Tests.exe -xunitxml > tests.xml
-on_failure:
     - type build.log
+on_failure:
     - curl -s https://raw.githubusercontent.com/report-ci/scripts/master/upload.py | python - --tool msvc --input build.log
     
 on_finish:
-    - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests.xml))
     - curl -s https://raw.githubusercontent.com/report-ci/scripts/master/upload.py | python
     #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 artifacts:
-    - path: ./build/release/
+    - path: ./x64/Release/
       name: artifacts
