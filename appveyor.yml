@@ -55,7 +55,7 @@ before_build:
 build_script:
     - curl -s https://report.ci/annotate.py > annotate.py
     
-    - msbuild c:\src\TcpCommunication.sln /m /property:Configuration=Release /verbosity:normal /parallel:true /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" > build.log
+    - msbuild c:\src\TcpCommunication.sln /m /property:Configuration=Release /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" > build.log
     
     #- .\debug\Tests.exe -xunitxml > tests.xml
 on_failure:
