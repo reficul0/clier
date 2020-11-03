@@ -1,7 +1,7 @@
 #pragma once
 
 #include <future>
-#include <unordered_map>
+#include <unordered_set>
 
 #include <boost/asio.hpp>
 #include <boost/thread/shared_mutex.hpp>
@@ -11,6 +11,17 @@
 
 #include "tcp_connection.h"
 
+namespace std {
+	template <>
+	struct hash<boost::shared_ptr<ip::tcp::connection>>
+	{
+		size_t operator()(boost::shared_ptr<ip::tcp::connection> const &x) const
+		{
+			return (size_t)x.get();
+		}
+	};
+}
+
 namespace ip
 {
 	namespace tcp
@@ -19,7 +30,7 @@ namespace ip
 		{
 			boost::asio::io_service &_io_service;
 			boost::asio::ip::tcp::acceptor _acceptor;
-			std::unordered_map<boost::shared_ptr<connection>::element_type*, boost::shared_ptr<connection>> _connections;
+			std::unordered_set<boost::shared_ptr<connection>> _connections;
 			mutable boost::shared_mutex _connections_change;
 		public:
 			boost::signals2::signal<void(connection*)> on_connected;
@@ -35,7 +46,7 @@ namespace ip
 			{
 				boost::shared_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
 				for (auto &connected : _connections)
-					connected.second->write(
+					connected->write(
 						bytes,
 						size,
 						boost::bind(
@@ -49,8 +60,8 @@ namespace ip
 				boost::shared_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
 				for (auto &connection : _connections)
 				{
-					auto packet = get_packet_for_connection(connection.second.get());
-					connection.second->write(
+					auto packet = get_packet_for_connection(connection.get());
+					connection->write(
 						packet.data(),
 						packet.size(),
 						boost::bind(
@@ -97,9 +108,9 @@ namespace ip
 #ifdef _DEBUG
 					socket.set_option(boost::asio::ip::tcp::socket::debug(true));
 #endif
-					auto connection_raw_ptr = connection.get();
+					const auto connection_raw_ptr = connection.get();
 					boost::unique_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
-					_connections.emplace(connection_raw_ptr, std::move(connection));
+					_connections.emplace(std::move(connection));
 
 					// todo: есть вероятность зависания, если коллбэк будет слишком долгим
 					on_connected(connection_raw_ptr);
@@ -122,7 +133,7 @@ namespace ip
 					{
 						auto connection_raw_ptr = connection.get();
 						boost::unique_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
-						auto connection_iter = _connections.find(connection_raw_ptr);
+						auto connection_iter = _connections.find(connection);
 						if (connection_iter != _connections.end())
 						{
 							// todo: есть вероятность зависания, если коллбэк будет слишком долгим
