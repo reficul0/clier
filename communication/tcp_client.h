@@ -122,12 +122,12 @@ namespace ip
 			}
 			
 			void _handle_reading_completion(
-				boost::shared_ptr<connection>,
+				boost::shared_ptr<connection> connection,
 				std::size_t bytes_transferred,
 				boost::system::error_code error
 			) {
 				if(error)
-					_set_connection_state_to_disconnected();
+					_set_connection_state_to_disconnected(connection);
 			}
 
 			void _handle_connection(
@@ -150,10 +150,10 @@ namespace ip
 			}
 			void _handle_disconnection_unsafe()
 			{
-				_set_connection_state_to_disconnected();
+				_set_connection_state_to_disconnected(_connection.first);
 				_notify_about_disconnection_and_free_connection_resources();
 			}
-			void _set_connection_state_to_disconnected()
+			void _set_connection_state_to_disconnected(boost::shared_ptr<connection>)
 			{
 				_connection.second = false;
 			}

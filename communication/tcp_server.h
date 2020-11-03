@@ -1,7 +1,7 @@
 #pragma once
 
 #include <future>
-#include <unordered_set>
+#include <unordered_map>
 
 #include <boost/asio.hpp>
 #include <boost/thread/shared_mutex.hpp>
@@ -30,7 +30,7 @@ namespace ip
 		{
 			boost::asio::io_service &_io_service;
 			boost::asio::ip::tcp::acceptor _acceptor;
-			std::unordered_set<boost::shared_ptr<connection>> _connections;
+			std::unordered_map<boost::shared_ptr<connection>, bool> _connections;
 			mutable boost::shared_mutex _connections_change;
 		public:
 			boost::signals2::signal<void(connection*)> on_connected;
@@ -46,7 +46,7 @@ namespace ip
 			{
 				boost::shared_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
 				for (auto &connected : _connections)
-					connected->write(
+					connected.first->write(
 						bytes,
 						size,
 						boost::bind(
@@ -54,14 +54,16 @@ namespace ip
 							boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3
 						)
 					);
+				
+				_handle_disconnected_links_unsafe();
 			}
 			void write(std::function<std::vector<uint8_t>(connection*)> get_packet_for_connection)
 			{
 				boost::shared_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
 				for (auto &connection : _connections)
 				{
-					auto packet = get_packet_for_connection(connection.get());
-					connection->write(
+					auto packet = get_packet_for_connection(connection.first.get());
+					connection.first->write(
 						packet.data(),
 						packet.size(),
 						boost::bind(
@@ -71,6 +73,8 @@ namespace ip
 					);
 
 				}
+				
+				_handle_disconnected_links_unsafe();
 			}
 			size_t get_connections_count() const
 			{
@@ -89,16 +93,16 @@ namespace ip
 			}
 		private:
 			void _handle_writing_completion(
-				boost::shared_ptr<connection> connection,
+				boost::shared_ptr<connection> const &connection,
 				std::size_t bytes_transferred,
 				boost::system::error_code error
 			) {
 				if (error)
-					_handle_disconnection_unsafe(connection, error);
+					_set_connection_state_to_disconnected(connection);
 			}
 			
 			void _handle_connection(
-				boost::shared_ptr<connection> connection,
+				boost::shared_ptr<connection> const &connection,
 				boost::system::error_code error
 			) {
 				if (!error)
@@ -110,7 +114,7 @@ namespace ip
 #endif
 					const auto connection_raw_ptr = connection.get();
 					boost::unique_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
-					_connections.emplace(std::move(connection));
+					_connections.emplace(std::move(connection), true);
 
 					// todo: есть вероятность зависания, если коллбэк будет слишком долгим
 					on_connected(connection_raw_ptr);
@@ -119,29 +123,20 @@ namespace ip
 				start_acception();
 			}
 
-			void _handle_disconnection_unsafe(
-				boost::shared_ptr<connection> connection,
-				boost::system::error_code error
-			) {
-				// todo сделать по аналогии с клиентом, т.к. связь может сейчас считаться не потерянной, хотя она уже потеряна.
-				// асинхронный вызов нужен, чтобы не инвалидировать итераторы, потому что этот дисконнект вызывается во время отправки по всем связям
-				// и даже если отдетаченный поток не сразу удалит связь, то это не смертельно, ибо в запись в неприконнеченную связь только приведет к повторному вызову этого метода
-				// и создаст отдетаченный поток заново, но метод, который мы передаём в поток учитывает, что связь может быть уже удалена.
-				// Да, это тратит лишние ресурсы, но как хотфикс вполне допустим.
-				std::thread(
-					[connection, this]() 
-					{
-						auto connection_raw_ptr = connection.get();
-						boost::unique_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
-						auto connection_iter = _connections.find(connection);
-						if (connection_iter != _connections.end())
-						{
-							// todo: есть вероятность зависания, если коллбэк будет слишком долгим
-							on_disconnected(connection_raw_ptr);
-							_connections.erase(connection_iter);
-						}
-					}
-				).detach();
+			void _handle_disconnected_links_unsafe()
+			{
+				for (auto it = std::begin(_connections); it != std::end(_connections);)
+				{
+					if (it->second == false)
+						it = _connections.erase(it);
+					else
+						++it;
+				}
+			}
+
+			void _set_connection_state_to_disconnected(boost::shared_ptr<connection> const &connection)
+			{
+				_connections[connection] = false;
 			}
 		};
 	}
