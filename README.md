@@ -9,7 +9,7 @@ Cliver
 
 ## Overview
 
-Cliver is C++ network client-server framework.
+Cliver is a C++ network client-server framework.
 
 Builds upon [Boost.ASIO](http://www.boost.org/) to provide a simple API for developers.
 
