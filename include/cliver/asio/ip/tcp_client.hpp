@@ -20,7 +20,7 @@ namespace ip
 		{
 			boost::asio::io_service &_io_service;
 			boost::asio::ip::tcp::resolver _resolver;
-			// todo std::atomic_bool?
+			// todo std::atomic_bool??
 			std::pair<boost::shared_ptr<tcp::connection>, bool> _connection;
 			mutable boost::shared_mutex _connection_change;
 		public:
