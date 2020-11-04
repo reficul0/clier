@@ -4,10 +4,14 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/RocketChat/Rocket.Chat/raw/master/LICENSE)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Freficul0%2FTcpCommunication.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Freficul0%2FTcpCommunication?ref=badge_shield)
 
-C++ network server and client framework based on [boost::asio 1.64.0](https://www.boost.org/doc/libs/1_64_0/)
+C++ network client-server framework.
 
-**Supported OS:**
-* Windows x64/x86
+## System Compatibility
+
+OS           | Compiler      | Status
+------------ | ------------- | -------------
+Windows      | msvc15        | :white_check_mark: Working
+Linux        | gcc           | In the plans
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Freficul0%2FTcpCommunication.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Freficul0%2FTcpCommunication?ref=badge_large)
