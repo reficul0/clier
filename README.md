@@ -1,6 +1,7 @@
 Cliver
 ======
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/304d5a2963804ee5be401a90453272a9)](https://app.codacy.com/gh/reficul0/cliver?utm_source=github.com&utm_medium=referral&utm_content=reficul0/cliver&utm_campaign=Badge_Grade_Settings)
 [![windows](https://ci.appveyor.com/api/projects/status/c7pl2eqi305fwdh0?svg=true)](https://ci.appveyor.com/project/reficul0/tcpcommunication)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a577391f70b24aa28a5bdbd0fa3d9321)](https://www.codacy.com/gh/reficul0/cliver/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=reficul0/cliver&amp;utm_campaign=Badge_Grade)
 [![CodeFactor](https://www.codefactor.io/repository/github/reficul0/cliver/badge)](https://www.codefactor.io/repository/github/reficul0/cliver)
