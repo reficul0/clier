@@ -9,6 +9,7 @@
 #include <boost/bind.hpp>
 #include <boost/signals2.hpp>
 
+#include "tools/locks.h"
 #include "tcp_connection.h"
 
 namespace ip
@@ -50,13 +51,13 @@ namespace ip
 
 			bool is_connected() const
 			{
-				boost::shared_lock<decltype(_connection_change)> connection_change_lock{ _connection_change };
+				TOOLS_SHARED_LOCK(_connection_change);
 				return _is_connected();
 			}
 
 			size_t read(uint8_t *bytes, size_t count)
 			{
-				boost::unique_lock<decltype(_connection_change)> connection_change_lock{ _connection_change };
+				TOOLS_UNIQUE_LOCK(_connection_change);
 				if (!_is_connected())
 					return 0;
 
@@ -82,7 +83,7 @@ namespace ip
 			// handler must return false if disconnection required
 			void read(size_t count, std::function<bool(connection*, std::vector<uint8_t>)> were_read_from_connection)
 			{
-				boost::unique_lock<decltype(_connection_change)> connection_change_lock{ _connection_change };
+				TOOLS_UNIQUE_LOCK(_connection_change);
 				if (!_is_connected())
 					return;
 
@@ -136,7 +137,7 @@ namespace ip
 			) {
 				if (!error)
 				{
-					boost::unique_lock<decltype(_connection_change)> connection_change_lock{ _connection_change };
+					TOOLS_UNIQUE_LOCK(_connection_change);
 					_connection = std::make_pair(std::move(connection), true);
 					on_connected(_connection.first.get());
 				}
@@ -144,7 +145,7 @@ namespace ip
 
 			void _handle_disconnection()
 			{
-				boost::unique_lock<decltype(_connection_change)> connection_change_lock{ _connection_change };
+				TOOLS_UNIQUE_LOCK(_connection_change);
 				if (_connection.first)
 					_handle_disconnection_unsafe();
 			}

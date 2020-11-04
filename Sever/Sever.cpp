@@ -8,7 +8,7 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 
-#include "../communication/tcp_server.h"
+#include "tools/asio/ip/tcp_server.h"
 #include "../protocol/connections_guard.h"
 #include "../protocol/packet_builder.h"
 

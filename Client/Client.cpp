@@ -7,7 +7,7 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 
-#include "../communication/tcp_client.h"
+#include "tools/asio/ip/tcp_client.h"
 #include "../protocol/connections_guard.h"
 #include "../protocol/packet_builder.h"
 

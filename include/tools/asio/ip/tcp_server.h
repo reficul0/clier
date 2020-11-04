@@ -9,6 +9,7 @@
 #include <boost/bind.hpp>
 #include <boost/signals2.hpp>
 
+#include "tools/locks.h"
 #include "tcp_connection.h"
 
 namespace std {
@@ -44,7 +45,7 @@ namespace ip
 
 			void write(uint8_t const *bytes, size_t size)
 			{
-				boost::shared_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
+				TOOLS_SHARED_LOCK(_connections_change);
 				for (auto &connected : _connections)
 					connected.first->write(
 						bytes,
@@ -59,7 +60,7 @@ namespace ip
 			}
 			void write(std::function<std::vector<uint8_t>(connection*)> get_packet_for_connection)
 			{
-				boost::shared_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
+				TOOLS_SHARED_LOCK(_connections_change);
 				for (auto &connection : _connections)
 				{
 					auto packet = get_packet_for_connection(connection.first.get());
@@ -78,7 +79,7 @@ namespace ip
 			}
 			size_t get_connections_count() const
 			{
-				boost::shared_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
+				TOOLS_SHARED_LOCK(_connections_change);
 				return _connections.size();
 			}
 
@@ -113,7 +114,7 @@ namespace ip
 					socket.set_option(boost::asio::ip::tcp::socket::debug(true));
 #endif
 					const auto connection_raw_ptr = connection.get();
-					boost::unique_lock<decltype(_connections_change)> connections_change_lock{ _connections_change };
+					TOOLS_UNIQUE_LOCK(_connections_change);
 					_connections.emplace(std::move(connection), true);
 
 					// todo: есть вероятность зависания, если коллбэк будет слишком долгим

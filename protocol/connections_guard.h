@@ -3,7 +3,7 @@
 
 #include "cei_packet.h"
 #include "packet_builder.h"
-#include "../communication/tcp_connection.h"
+#include "tools/asio/ip/tcp_connection.h"
 
 namespace protocol
 {

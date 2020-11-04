@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Файлы заголовков\communication">
-      <UniqueIdentifier>{aca55eae-c909-4d56-9d64-20bf9e7dc440}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Файлы заголовков\protocol">
       <UniqueIdentifier>{434dca69-36bc-4ea1-88c6-6c2f13ffadf7}</UniqueIdentifier>
     </Filter>
@@ -23,12 +20,6 @@
   <ItemGroup>
     <ClInclude Include="pch.h">
       <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\communication\tcp_client.h">
-      <Filter>Файлы заголовков\communication</Filter>
-    </ClInclude>
-    <ClInclude Include="..\communication\tcp_connection.h">
-      <Filter>Файлы заголовков\communication</Filter>
     </ClInclude>
     <ClInclude Include="..\protocol\cei_packet.h">
       <Filter>Файлы заголовков\protocol</Filter>
