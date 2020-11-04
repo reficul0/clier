@@ -49,7 +49,7 @@ build_script:
     - msbuild c:\src\TcpCommunication.sln /m /property:Configuration=Release /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" > build.log
     - type build.log
 
-on_fail:
+on_failure:
     - type build.log
 on_finish:
     #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
