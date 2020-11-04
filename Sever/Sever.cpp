@@ -8,9 +8,9 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 
-#include "tools/asio/ip/tcp_server.h"
-#include "../protocol/connections_guard.h"
-#include "../protocol/packet_builder.h"
+#include "tools/asio/ip/tcp_server.hpp"
+#include "../protocol/connections_guard.hpp"
+#include "../protocol/packet_builder.hpp"
 
 int main(int argc, char *argv[])
 {

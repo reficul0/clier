@@ -1,9 +1,9 @@
 #pragma once
 #include <unordered_map>
 
-#include "cei_packet.h"
-#include "packet_builder.h"
-#include "tools/asio/ip/tcp_connection.h"
+#include "cei_packet.hpp"
+#include "packet_builder.hpp"
+#include "tools/asio/ip/tcp_connection.hpp"
 
 namespace protocol
 {

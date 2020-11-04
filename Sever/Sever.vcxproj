@@ -153,9 +153,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\protocol\cei_packet.h" />
-    <ClInclude Include="..\protocol\connections_guard.h" />
-    <ClInclude Include="..\protocol\packet_builder.h" />
+    <ClInclude Include="..\protocol\cei_packet.hpp" />
+    <ClInclude Include="..\protocol\connections_guard.hpp" />
+    <ClInclude Include="..\protocol\packet_builder.hpp" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

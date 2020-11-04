@@ -152,7 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\protocol\cei_packet.h" />
+    <ClInclude Include="..\protocol\cei_packet.hpp" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

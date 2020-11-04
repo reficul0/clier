@@ -2,7 +2,7 @@
 
 #include <atomic>
 
-#include "cei_packet.h"
+#include "cei_packet.hpp"
 
 namespace protocol
 {

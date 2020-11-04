@@ -9,8 +9,8 @@
 #include <boost/bind.hpp>
 #include <boost/signals2.hpp>
 
-#include "tools/locks.h"
-#include "tcp_connection.h"
+#include "tools/locks.hpp"
+#include "tcp_connection.hpp"
 
 namespace std {
 	template <>
