@@ -1,7 +1,7 @@
 Cliver
 ======
 
-[![windows](https://ci.appveyor.com/api/projects/status/c7pl2eqi305fwdh0?svg=true)](https://ci.appveyor.com/project/reficul0/tcpcommunication)
+[![windows build](https://ci.appveyor.com/api/projects/status/c7pl2eqi305fwdh0?svg=true)](https://ci.appveyor.com/project/reficul0/tcpcommunication)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/304d5a2963804ee5be401a90453272a9)](https://app.codacy.com/gh/reficul0/cliver?utm_source=github.com&utm_medium=referral&utm_content=reficul0/cliver&utm_campaign=Badge_Grade_Settings)
 [![CodeFactor](https://www.codefactor.io/repository/github/reficul0/cliver/badge)](https://www.codefactor.io/repository/github/reficul0/cliver)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/RocketChat/Rocket.Chat/raw/master/LICENSE)
