@@ -144,4 +144,4 @@ Pull requests are welcome.
 * [@reficul0](https://github.com/reficul0)
 
 ## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Freficul0%2FTcpCommunication.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Freficul0%2FTcpCommunication?ref=badge_large)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Freficul0%2Fcliver.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Freficul0%2Fcliver?ref=badge_large)
