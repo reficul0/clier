@@ -9,7 +9,7 @@
 #include <boost/bind.hpp>
 #include <boost/signals2.hpp>
 
-#include <tools/locks.hpp>
+#include <cliver/locks.hpp>
 #include "tcp_connection.hpp"
 
 namespace ip
