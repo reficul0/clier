@@ -5,7 +5,10 @@ Cliver
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/304d5a2963804ee5be401a90453272a9)](https://app.codacy.com/gh/reficul0/cliver?utm_source=github.com&utm_medium=referral&utm_content=reficul0/cliver&utm_campaign=Badge_Grade_Settings)
 [![CodeFactor](https://www.codefactor.io/repository/github/reficul0/cliver/badge)](https://www.codefactor.io/repository/github/reficul0/cliver)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/RocketChat/Rocket.Chat/raw/master/LICENSE)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Freficul0%2Fcliver.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Freficul0%2Fcliver?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Freficul0%2Fcliver.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Freficul0%2Fcliver?ref=badge_shield)<br>
+![language](https://img.shields.io/badge/language-c++-blue.svg)
+![c++](https://img.shields.io/badge/std-c++14-blue.svg)
+![msvc2017](https://img.shields.io/badge/MSVC-2017-ff69b4.svg) 
 
 ## Overview
 
