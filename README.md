@@ -25,7 +25,7 @@ Builds upon [Boost.ASIO](http://www.boost.org/) to provide a simple API for deve
 
 ### Requirements
 
-* [Required] - [Boost (1.64 or newer)](http://www.boost.org/). In example it's installed wia nuget.
+* [Required] - [Boost (1.64 or newer)](http://www.boost.org/). In example its installed as nuget packet.
 
 ### Building on Windows
 
