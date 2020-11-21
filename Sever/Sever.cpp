@@ -11,38 +11,25 @@
 #include <cliver/asio/ip/tcp_server.hpp>
 #include "../protocol/connections_guard.hpp"
 #include "../protocol/packet_builder.hpp"
+#include "program_options.h"
+
 
 int main(int argc, char *argv[])
 {
-	if (argc < 3)
+	configuration::Configuration cfg;
+	try
 	{
-		std::cout << "Usage <port> <wait_for_first_connection_timout_milliseconds>" << std::endl;
-		return EXIT_SUCCESS;
+		if (auto optional_cfg = configuration::get_configuration(argc, argv))
+			cfg = *optional_cfg;
+		else
+			return EXIT_SUCCESS;
+		
 	}
-
-	static auto str_to_ul_and_exit_if_fail = [](std::string str, char const *convert_error_msg)
+	catch(std::exception const &e)
 	{
-		try
-		{
-			return std::stoul(str);
-		}
-		catch (std::exception const &)
-		{
-			std::cout << convert_error_msg << std::endl;
-			exit(EXIT_FAILURE);
-		}
-	};
-
-	unsigned short const port_number = str_to_ul_and_exit_if_fail(
-		argv[1],
-		"Error: can't cast console arg 1(port_number) to unsigned long."
-	);
-	boost::chrono::milliseconds const wait_for_first_connection_timout_ms{
-		str_to_ul_and_exit_if_fail(
-			argv[2], 
-			"Error: can't cast console arg 2(wait_for_first_connection_timout_ms) to unsigned long."
-		)
-	};
+		std::cout << e.what() << std::endl;
+		return EXIT_FAILURE;
+	}
 	
 	srand(time(NULL));
 
@@ -55,7 +42,7 @@ int main(int argc, char *argv[])
 		}
 	};
 
-	ip::tcp::server server{ io_service, port_number };
+	ip::tcp::server server{ io_service, cfg.port_number };
 
 	protocol::cei::connections_guard connections_guard;
 	server.on_connected.connect(
@@ -75,7 +62,7 @@ int main(int argc, char *argv[])
 				rand() % std::numeric_limits<decltype(protocol::cei::payload::payload)>::max()
 			}
 		);
-		auto* packet = (protocol::cei::packet*)packet_bytes.data();
+		auto *packet = (protocol::cei::packet*)packet_bytes.data();
 		
 		std::cout << "Outgoung frame" << std::endl
 			<< "\tHeader {" << std::endl
@@ -92,7 +79,7 @@ int main(int argc, char *argv[])
 	{
 		if (!server.get_connections_count())
 		{
-			boost::this_thread::sleep_for(wait_for_first_connection_timout_ms);
+			boost::this_thread::sleep_for(cfg.wait_for_first_connection_timeout_ms);
 			continue;
 		}
 

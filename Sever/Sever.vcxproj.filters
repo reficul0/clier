@@ -30,6 +30,9 @@
     <ClInclude Include="..\protocol\packet_builder.hpp">
       <Filter>Файлы заголовков\protocol</Filter>
     </ClInclude>
+    <ClInclude Include="program_options.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
