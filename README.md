@@ -18,6 +18,7 @@ Builds upon [Boost.ASIO](http://www.boost.org/) to provide a simple API for deve
 
 ### Features
 * Server can send packets to clients
+* Server can accept many clients connections
 * Clients can handle server packets
 
 ## Installation
