@@ -113,7 +113,7 @@ int main(int argc, char const* argv[]) {
       // todo customize wait timeout
       boost::this_thread::sleep_for(boost::chrono::milliseconds(50));
     }
-	};
+  };
   std::vector<uint8_t> packet;
   packet.resize(4);
   
