@@ -30,7 +30,7 @@ Builds upon [Boost.ASIO](http://www.boost.org/) to provide a simple API for deve
 ### Building on Windows
 
 ```shell
-- git clone git@github.com:reficul0/TcpCommunication.git
+- git clone git@github.com:reficul0/cliver.git
 - mkdir cliver.build && cd cliver.build
 - nuget restore ..\TcpCommunication.sln
 - msbuild ..\TcpCommunication.sln /m /property:Configuration=Release
