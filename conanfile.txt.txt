@@ -1,0 +1,21 @@
+[requires]
+boost/1.69.0
+
+[generators]
+cmake
+
+[options]
+boost:shared=False
+
+[imports]
+bin, protoc* -> ./
+bin, *.dylib -> ./
+bin, *.so -> ./
+bin, *.dll -> ./
+lib, *.dylib -> ./
+lib, *.so -> ./
+lib, *.dll -> ./
+
+# bin, *.dll -> ./bin
+# bin, *.dll -> ./bin
+# bin, *.dylib -> ./bin

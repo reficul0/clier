@@ -2,7 +2,10 @@ version: 'build-{build}-{branch}'
 
 os: unstable
 image: Visual Studio 2017   # на этом VM-образе установлены все Visual Studio с 2008 по 2015
-    
+   
+build:
+  verbosity: detailed
+  
 init:
     # секция инициализации, исполняется до клонирования проекта
     # скорее всего, строчка ниже необязательна (так должно быть по умолчанию),
@@ -22,11 +25,6 @@ platform:
 configuration:
     - Release
 
-cache:
-  - packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
-  - '%LocalAppData%\NuGet\Cache'    # NuGet < v3
-  - '%LocalAppData%\NuGet\v3-cache' # NuGet v3
-    
 environment:
     CODECOV_TOKEN:
         secure: e8qe5I3ngSiMDPZsLfLBP7iCZJHrFD8gsXAYTkfQ1HL09UBk10s4vWNEDVMnFoM8
@@ -38,12 +36,38 @@ environment:
         - TOOLCHAIN: msvc15
 install:
     - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
-before_build:
-    - nuget restore c:\src\TcpCommunication.sln
+    - cmd: echo "Downloading conan..."
+    - ps: wget http://downloads.conan.io/latest_windows -OutFile conan_installer.exe
+    - cmd: conan_installer.exe /VERYSILENT
+    - cmd: set PATH=%PATH%;C:\Program Files (x86)\Conan\conan
+    - cmd: conan --version
+    - cmd: ECHO %PROCESSOR_ARCHITECTURE%
+    - cmd: reg query "HKLM\System\CurrentControlSet\Control\Session Manager\Environment" /v PROCESSOR_ARCHITECTURE
+    - cmd: echo %CONFIGURATION%
   
+shallow_clone: true
+
+branches:
+  only:
+    - master
+    - develop
+
 build_script:
-    - msbuild c:\src\TcpCommunication.sln /m /property:Configuration=Release /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" > build.log
-    - type build.log
+  # - cmd: conan install -o gtest:shared=True
+  - cmd: conan install
+  - cmd: dir
+  - cmd: protoc message.proto --cpp_out="."
+  - cmd: mkdir build
+  - cmd: cd build
+  # - cmd: cmake ../ -DBUILD_TEST=TRUE  -G "Visual Studio 14 2015 Win64"
+  # - cmd: cmake --build . --config Release
+
+  - cmd: cmake .. -G "Visual Studio 14 2017 Win64"
+  - cmd: cmake --build . --config %CONFIGURATION%
+
+test_script:
+  - cmd: cd bin
+  - cmd: dir
 
 on_failure:
     - type build.log
@@ -51,5 +75,5 @@ on_finish:
     #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 artifacts:
-    - path: ./x64/Release/
+    - path: ./%PROCESSOR_ARCHITECTURE%/Release/
       name: artifacts

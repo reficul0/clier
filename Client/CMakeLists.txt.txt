@@ -1,0 +1,30 @@
+project(Client)
+cmake_minimum_required(VERSION 3.0)
+
+include(conanbuildinfo.cmake)
+# include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR} SOURCES)
+file(GLOB HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+# file(GLOB TOOLS_SOURCES 
+#	"${CMAKE_CURRENT_SOURCE_DIR}/include/cliver/*.hpp" 
+#	"${CMAKE_CURRENT_SOURCE_DIR}/include/cliver/asio/ip/*.hpp"
+#)
+
+add_executable( ${PROJECT_NAME} ${SOURCES} ${HEADERS} ${TOOLS_SOURCES} )
+
+target_compile_definitions(${PROJECT_NAME} 
+    PRIVATE NOMINMAX
+)
+
+set_target_properties( ${PROJECT_NAME} PROPERTIES COMPONENT_NAME ${PROJECT_NAME} )
+
+# IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+# 	set(CONAN_LIBS ${CONAN_LIBS} "rt")
+# ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux") 
+# message(${CONAN_LIBS})
+
+target_link_libraries(${PROJECT_NAME} message ${CONAN_LIBS})
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
