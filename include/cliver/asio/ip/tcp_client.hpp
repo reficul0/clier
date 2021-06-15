@@ -116,6 +116,23 @@ namespace ip
 				// disconnection requires the completion
 				_notify_about_disconnection_and_free_connection_resources();
 			}
+
+			size_t write(uint8_t *bytes, size_t count)
+			{
+				TOOLS_SHARED_LOCK(_connection_change);
+				auto const bytes_were_written = _connection.first->write(
+					bytes,
+					count,
+					boost::bind(
+						&client::_handle_writing_completion, this,
+						boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3
+					)
+				);
+
+				_handle_disconnection_unsafe();
+
+				return bytes_were_written;
+			}
 		private:
 			bool _is_connected() const
 			{
@@ -128,6 +145,15 @@ namespace ip
 				boost::system::error_code error
 			) {
 				if(error)
+					_set_connection_state_to_disconnected(connection);
+			}
+
+			void _handle_writing_completion(
+				boost::shared_ptr<connection> const &connection,
+				std::size_t bytes_transferred,
+				boost::system::error_code error
+			) {
+				if (error)
 					_set_connection_state_to_disconnected(connection);
 			}
 
@@ -146,12 +172,13 @@ namespace ip
 			void _handle_disconnection()
 			{
 				TOOLS_UNIQUE_LOCK(_connection_change);
-				if (_connection.first)
-					_handle_disconnection_unsafe();
+				_handle_disconnection_unsafe();
 			}
 			void _handle_disconnection_unsafe()
 			{
-				_set_connection_state_to_disconnected(_connection.first);
+				if (!_connection.first)
+					return;
+
 				_notify_about_disconnection_and_free_connection_resources();
 			}
 			void _set_connection_state_to_disconnected(boost::shared_ptr<connection>)
