@@ -2,10 +2,6 @@ version: 'build-{build}-{branch}'
 
 os: unstable
 image: Visual Studio 2017   # на этом VM-образе установлены все Visual Studio с 2008 по 2015
-
-branches:
-  only:
-    - master
     
 init:
     # секция инициализации, исполняется до клонирования проекта
