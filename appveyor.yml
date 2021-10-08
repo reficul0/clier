@@ -8,7 +8,7 @@ build:
   
 init:
     - git config --global core.autocrlf input
-clone_folder: c:\src # выбираем локальную директорию для клонирования
+#clone_folder: c:\src # выбираем локальную директорию для клонирования
 shallow_clone: true # копируем только последний коммит, без истории (git clone --depth 1)
 
 skip_commits:
