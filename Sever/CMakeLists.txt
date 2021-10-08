@@ -8,12 +8,14 @@ aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR} SOURCES)
 # Формируем цель
 add_executable( ${PROJECT_NAME} ${SOURCES} ${HEADERS} )
 
-find_package( 
-	Boost 1.64 REQUIRED 
-	COMPONENTS regex filesystem system date_time chrono thread locale iostreams program_options
-)
-target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIRS})
-target_link_directories(${PROJECT_NAME} PRIVATE  ${Boost_LIBRARY_DIR_DEBUG})
+SET(BOOST_ROOT ${CONAN_BOOST_ROOT})
+SET(BOOST_INCLUDEDIR ${CONAN_INCLUDE_DIRS_BOOST})
+set(BOOST_LIBRARYDIR ${CONAN_LIB_DIRS_BOOST})
+set(BOOST_LIBRARY_DIR ${CONAN_LIB_DIRS_BOOST})
+find_package(Boost 1.64.0 EXACT REQUIRED COMPONENTS regex filesystem system date_time chrono thread locale iostreams program_options)
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_INCLUDEDIR})
+target_link_directories(${PROJECT_NAME} PRIVATE  ${BOOST_LIBRARYDIR})
 
 # For access to directories: include, protocol
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
