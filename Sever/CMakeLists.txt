@@ -12,7 +12,8 @@ SET(BOOST_ROOT ${CONAN_BOOST_ROOT})
 SET(BOOST_INCLUDEDIR ${CONAN_INCLUDE_DIRS_BOOST})
 set(BOOST_LIBRARYDIR ${CONAN_LIB_DIRS_BOOST})
 set(BOOST_LIBRARY_DIR ${CONAN_LIB_DIRS_BOOST})
-find_package(Boost 1.73.0 EXACT REQUIRED COMPONENTS regex filesystem system date_time chrono thread locale iostreams program_options)
+
+find_package(Boost 1.70.0 EXACT REQUIRED COMPONENTS regex filesystem system date_time chrono thread locale iostreams program_options)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_INCLUDEDIR})
 target_link_directories(${PROJECT_NAME} PRIVATE  ${BOOST_LIBRARYDIR})
