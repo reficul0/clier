@@ -69,25 +69,23 @@ branches:
     - master
     - develop
 
-build_script:
+before_build:
   - cmd: dir
-  - cmd: mkdir build
-  - cmd: cd build
+  - mkdir build && cd build
   - conan install ..
   - echo y | conan package ..
+  - cmake -A %platform% -G "%generator%" ..
+    
+build_script:
+  - cmake --build . --config %configuration%
 
-  - cmd: cmake -G "Visual Studio 15 2017" -A %PROCESSOR_ARCHITECTURE%
-  - cmd: cmake --build . --config %CONFIGURATION%
 
 test_script:
-  - cmd: cd bin
-  - cmd: dir
+    - ctest --output-on-failure -C %configuration%
 
-on_failure:
-    - type build.log
 on_finish:
     #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 artifacts:
-    - path: ./%PROCESSOR_ARCHITECTURE%/%CONFIGURATION%/
+    - path: ./build
       name: artifacts
