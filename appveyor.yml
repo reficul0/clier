@@ -68,7 +68,7 @@ before_build:
   - cmake -A %platform% -G "Visual Studio 15 2017" ..
     
 build_script:
-  - cmake --build . --config %configuration%
+  - cmake --build .
 
 
 test_script:
