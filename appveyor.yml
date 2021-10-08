@@ -30,7 +30,15 @@ environment:
     APPVEYOR_RDP_PASSWORD: 1234as!&
     matrix:
         - TOOLCHAIN: msvc15
-        - PYTHON: "C:\Python37"
+        - PYTHON_DIR: "C:\\Python37"
+          PYTHON_VERSION: "3.7.x"
+          PYTHON_ARCH: "32"
+          BLOCK: "0"
+
+        - PYTHON_DIR: "C:\\Python37-x64"
+          PYTHON_VERSION: "3.7.x"
+          PYTHON_ARCH: "64"
+          BLOCK: "0"
 install:
     - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
     - cmd: echo "Downloading conan..."
