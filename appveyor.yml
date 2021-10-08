@@ -51,7 +51,6 @@ install:
     - conan user # It creates the conan data directory
     - cmd: conan --version
     - conan remote add conan-center https://conan.bintray.com
-    - conan remote add conan-community https://api.bintray.com/conan/conan-community/conan
     - conan remote add bincrafters https://api.bintray.com/conan/conan-community/conan
     - cmd: echo conan remote list
     
