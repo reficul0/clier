@@ -13,12 +13,12 @@ SET(BOOST_INCLUDEDIR ${CONAN_INCLUDE_DIRS_BOOST})
 set(BOOST_LIBRARYDIR ${CONAN_LIB_DIRS_BOOST})
 set(BOOST_LIBRARY_DIR ${CONAN_LIB_DIRS_BOOST})
 
+set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.70.0 EXACT REQUIRED COMPONENTS regex filesystem system date_time chrono thread locale iostreams program_options)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${BOOST_INCLUDEDIR})
 target_link_directories(${PROJECT_NAME} PRIVATE  ${BOOST_LIBRARYDIR})
 
-# For access to directories: include, protocol
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/include")
 
