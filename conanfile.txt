@@ -1,0 +1,17 @@
+[requires]
+boost/1.70.0@conan/stable
+
+[generators]
+cmake
+
+[options]
+boost:shared=False
+
+[imports]
+bin, protoc* -> ./
+bin, *.dylib -> ./
+bin, *.so -> ./
+bin, *.dll -> ./
+lib, *.dylib -> ./
+lib, *.so -> ./
+lib, *.dll -> ./
