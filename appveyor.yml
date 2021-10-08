@@ -53,21 +53,21 @@ environment:
           CXX_STANDARD: 14
 install:
     - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
-    - cmd set PATH=%PATH%;%PYTHON%/Scripts/
-    - cmd set PATH=%PATH%;C:/Program Files (x86)/Conan/conan
+    - set PATH=%PATH%;%PYTHON%/Scripts/
+    - set PATH=%PATH%;C:/Program Files (x86)/Conan/conan
     
-    - echo "Downloading conan..."
+    - cmd: echo "Downloading conan..."
     - pip.exe install conan --upgrade
     - pip.exe install conan_package_tools
     - conan user # It creates the conan data directory
-    - conan --version
+    - cmd: conan --version
     - conan remote add conan-center https://conan.bintray.com
     - conan remote add bincrafters https://api.bintray.com/conan/conan-community/conan
     - conan remote list
     
-    - echo %PROCESSOR_ARCHITECTURE%
+    - cmd: ECHO %PROCESSOR_ARCHITECTURE%
     - cmd: reg query "HKLM\System\CurrentControlSet\Control\Session Manager\Environment" /v PROCESSOR_ARCHITECTURE
-    - echo %CONFIGURATION%
+    - cmd: echo %CONFIGURATION%
 
 branches:
   only:
