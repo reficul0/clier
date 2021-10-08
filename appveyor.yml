@@ -42,8 +42,7 @@ environment:
 install:
     - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
     - cmd: echo "Downloading conan..."
-    - ps: python -m pip install --upgrade pip
-    - ps: pip install conan
+    - ps: python -m pip install -U conan
     - cmd: set PATH=C:\Python37;C:\Python37\Scripts;%PATH%;C:\Program Files (x86)\Conan\conan
     - cmd: conan --version
     - cmd: ECHO %PROCESSOR_ARCHITECTURE%
