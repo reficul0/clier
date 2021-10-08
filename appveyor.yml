@@ -52,7 +52,7 @@ environment:
           BUILD_COVERAGE: ON
           CXX_STANDARD: 14
 install:
-    - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+    - if [%APPVEYOR_BUILD_WORKER_IMAGE%]!=[Ubuntu] call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
     - set PATH=%PATH%;%PYTHON%/Scripts/
     - set PATH=%PATH%;C:/Program Files (x86)/Conan/conan
     
