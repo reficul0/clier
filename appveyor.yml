@@ -66,14 +66,13 @@ branches:
     - develop
 
 build_script:
-  # - cmd: conan install -o gtest:shared=True
   - cmd: dir
   - cmd: mkdir build
   - cmd: cd build
   - conan install ..
   - echo y | conan package ..
 
-  - cmd: cmake .. -G "Visual Studio 14 2017 Win64"
+  - cmd: cmake .. -G "Visual Studio 15 2017"
   - cmd: cmake --build . --config %CONFIGURATION%
 
 test_script:
