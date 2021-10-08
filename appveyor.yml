@@ -30,10 +30,11 @@ environment:
     APPVEYOR_RDP_PASSWORD: 1234as!&
     matrix:
         - TOOLCHAIN: msvc15
+        - TOXENV: py35
 install:
     - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
     - cmd: echo "Downloading conan..."
-    - ps: pip3 install conan
+    - ps: pip install conan
     - cmd: set PATH=%PATH%;C:\Program Files (x86)\Conan\conan
     - cmd: conan --version
     - cmd: ECHO %PROCESSOR_ARCHITECTURE%
