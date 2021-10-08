@@ -26,27 +26,7 @@ if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
 	file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/v0.15/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
 endif()
 include(${CMAKE_BINARY_DIR}/conan.cmake)
-conan_add_remote(
-	NAME
-	bincrafters
-	URL
-	https://api.bintray.com/conan/bincrafters/public-conan
-)
-conan_cmake_run(
-	REQUIRES
-	${CONAN_EXTRA_REQUIRES}
-	catch2/2.11.0
-	cmake_findboost_modular/1.69.0@bincrafters/stable # MINE
-	boost/1.73.0                                      # MINE
-	fmt/6.2.0
-	spdlog/1.5.0
-	OPTIONS
-	${CONAN_EXTRA_OPTIONS}
-	BASIC_SETUP
-	CMAKE_TARGETS # individual targets to link to
-	BUILD
-	missing
-)
+conan_cmake_run(REQUIRES boost/1.70.0@conan/stable BASIC_SETUP BUILD missing)
 
 message(WARNING "CONAN_BOOST_ROOT ${CONAN_BOOST_ROOT}")
 message(WARNING "CONAN_INCLUDE_DIRS_BOOST ${CONAN_INCLUDE_DIRS_BOOST}")
