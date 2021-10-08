@@ -62,11 +62,12 @@ branches:
 
 build_script:
   # - cmd: conan install -o gtest:shared=True
-  - cmd: conan install
   - cmd: dir
   - cmd: protoc message.proto --cpp_out="."
   - cmd: mkdir build
   - cmd: cd build
+  - conan install ..
+  - conan package ..
 
   - cmd: cmake .. -G "Visual Studio 14 2017 Win64"
   - cmd: cmake --build . --config %CONFIGURATION%
