@@ -72,7 +72,8 @@ build_script:
   - conan install ..
   - echo y | conan package ..
   
-  - cmd: cd package
+  - cmd: dir
+  - cmd: cd ./package
   - cmd: dir
 
   - cmd: cmake .. -G "Visual Studio 15 2017"
