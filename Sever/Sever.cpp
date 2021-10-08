@@ -9,9 +9,9 @@
 #include <boost/thread.hpp>
 
 #include <cliver/asio/ip/tcp_server.hpp>
-#include "../protocol/connections_guard.hpp"
-#include "../protocol/packet_builder.hpp"
-#include "program_options.h"
+#include "protocol/connections_guard.hpp"
+#include "protocol/packet_builder.hpp"
+#include "program_options.hpp"
 
 
 int main(int argc, char *argv[])

@@ -1,5 +1,5 @@
 [requires]
-boost/1.69.0
+boost/1.64.0
 
 [generators]
 cmake
@@ -15,7 +15,3 @@ bin, *.dll -> ./
 lib, *.dylib -> ./
 lib, *.so -> ./
 lib, *.dll -> ./
-
-# bin, *.dll -> ./bin
-# bin, *.dll -> ./bin
-# bin, *.dylib -> ./bin
