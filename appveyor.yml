@@ -11,6 +11,15 @@ init:
 clone_folder: c:\src # выбираем локальную директорию для клонирования
 shallow_clone: true # копируем только последний коммит, без истории (git clone --depth 1)
 
+skip_commits:
+    files:
+      - docs/*
+      - LICENSE
+      - README.md
+      - .travis.yml
+      - codecov.yml
+      - .gitignore
+  
 matrix:
     fast_finish: true # останавливаемся после возникновения ошибки в каком-то из заданий
 
@@ -30,13 +39,18 @@ environment:
         secure: /W0ImKAfLG96HA1nlkhhW0ntoJCRq7wps5
     APPVEYOR_RDP_PASSWORD: 1234as!&
     matrix:
-        - CONAN_VISUAL_VERSIONS: 15
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+          CONAN_VISUAL_VERSIONS: 15
           CONAN_BUILD_TYPES: Release
           TOOLCHAIN: msvc15
           compiler: Visual Studio 15 2017
           generator: "Visual Studio 15 2017"
           CXX_STANDARD: 14
-          APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+        - CXX: g++-7
+          CC: gcc-7
+          APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+          BUILD_COVERAGE: ON
+          CXX_STANDARD: 14
 install:
     - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
     - set PATH=%PATH%;%PYTHON%/Scripts/
@@ -80,3 +94,4 @@ on_finish:
 artifacts:
     - path: ./build
       name: artifacts
+      
