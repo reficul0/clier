@@ -42,6 +42,10 @@ environment:
           PYTHON_VERSION: "3.7.x"
           PYTHON_ARCH: "64"
           BLOCK: "0"
+        - compiler: Visual Studio 15 2017
+          generator: "Visual Studio 15 2017"
+          CXX_STANDARD: 14
+          APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 install:
     - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
     - set PATH=%PATH%;%PYTHON%/Scripts/
@@ -72,7 +76,7 @@ build_script:
   - conan install ..
   - echo y | conan package ..
 
-  - cmd: cmake .. -G "Visual Studio 15 2017"
+  - cmd: cmake -G "Visual Studio 15 2017" -A %PROCESSOR_ARCHITECTURE%
   - cmd: cmake --build . --config %CONFIGURATION%
 
 test_script:
