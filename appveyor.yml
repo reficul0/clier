@@ -74,7 +74,7 @@ before_build:
   - mkdir build && cd build
   - conan install ..
   - echo y | conan package ..
-  - cmake -A %platform% -G "%generator%" ..
+  - cmake -A %platform% -G "Visual Studio 15 2017" ..
     
 build_script:
   - cmake --build . --config %configuration%
