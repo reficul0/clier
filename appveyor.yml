@@ -73,6 +73,8 @@ build_script:
   - echo y | conan package ..
   
   - cmd: dir
+  - cmd: cd ..
+  - cmd: dir
   - cmd: cd ./package
   - cmd: dir
 
