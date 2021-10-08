@@ -30,6 +30,8 @@ environment:
         secure: /W0ImKAfLG96HA1nlkhhW0ntoJCRq7wps5
     APPVEYOR_RDP_PASSWORD: 1234as!&
     matrix:
+        - CONAN_VISUAL_VERSIONS: 15
+          CONAN_BUILD_TYPES: Release
         - TOOLCHAIN: msvc15
         - PYTHON_DIR: "C:\\Python37"
           PYTHON_VERSION: "3.7.x"
@@ -69,7 +71,7 @@ build_script:
   - cmd: mkdir build
   - cmd: cd build
   - conan install ..
-  - conan package ..
+  - echo y | conan package ..
 
   - cmd: cmake .. -G "Visual Studio 14 2017 Win64"
   - cmd: cmake --build . --config %CONFIGURATION%
