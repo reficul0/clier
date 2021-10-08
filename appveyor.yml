@@ -32,17 +32,8 @@ environment:
     matrix:
         - CONAN_VISUAL_VERSIONS: 15
           CONAN_BUILD_TYPES: Release
-        - TOOLCHAIN: msvc15
-        - PYTHON_DIR: "C:\\Python37"
-          PYTHON_VERSION: "3.7.x"
-          PYTHON_ARCH: "32"
-          BLOCK: "0"
-
-        - PYTHON_DIR: "C:\\Python37-x64"
-          PYTHON_VERSION: "3.7.x"
-          PYTHON_ARCH: "64"
-          BLOCK: "0"
-        - compiler: Visual Studio 15 2017
+          TOOLCHAIN: msvc15
+          compiler: Visual Studio 15 2017
           generator: "Visual Studio 15 2017"
           CXX_STANDARD: 14
           APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
