@@ -22,7 +22,7 @@ target_link_directories(${PROJECT_NAME} PRIVATE  ${BOOST_LIBRARYDIR})
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/include")
 
-target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS} boost::regex boost::system boost::filesystem boost::chrono boost::thread boost::locale boost::date_time boost::timer boost::iostreams)
+target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS} Boost::regex Boost::system Boost::filesystem Boost::chrono Boost::thread Boost::locale Boost::date_time Boost::timer Boost::iostreams)
 
 target_compile_definitions(${PROJECT_NAME} 
     PRIVATE NOMINMAX
