@@ -7,18 +7,14 @@ build:
   verbosity: detailed
   
 init:
-    # секция инициализации, исполняется до клонирования проекта
-    # скорее всего, строчка ниже необязательна (так должно быть по умолчанию),
-    # вместе с тем, она присутствует в официальных примерах, так что пусть будет:
     - git config --global core.autocrlf input
 clone_folder: c:\src # выбираем локальную директорию для клонирования
-shallow_clone: true              # копируем только последний коммит, без истории (git clone --depth 1)
+shallow_clone: true # копируем только последний коммит, без истории (git clone --depth 1)
 
 matrix:
-    fast_finish: true           # останавливаемся после возникновения ошибки в каком-то из заданий
+    fast_finish: true # останавливаемся после возникновения ошибки в каком-то из заданий
 
 platform:
-    # будем гонять CI на amd64 и x86...
     - x64    
     - x86
 
@@ -37,7 +33,7 @@ environment:
 install:
     - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
     - cmd: echo "Downloading conan..."
-    - ps: pip install conan
+    - ps: pip3 install conan
     - cmd: set PATH=%PATH%;C:\Program Files (x86)\Conan\conan
     - cmd: conan --version
     - cmd: ECHO %PROCESSOR_ARCHITECTURE%
@@ -56,8 +52,6 @@ build_script:
   - cmd: protoc message.proto --cpp_out="."
   - cmd: mkdir build
   - cmd: cd build
-  # - cmd: cmake ../ -DBUILD_TEST=TRUE  -G "Visual Studio 14 2015 Win64"
-  # - cmd: cmake --build . --config Release
 
   - cmd: cmake .. -G "Visual Studio 14 2017 Win64"
   - cmd: cmake --build . --config %CONFIGURATION%
@@ -72,5 +66,5 @@ on_finish:
     #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 artifacts:
-    - path: ./%PROCESSOR_ARCHITECTURE%/Release/
+    - path: ./%PROCESSOR_ARCHITECTURE%/%CONFIGURATION%/
       name: artifacts
