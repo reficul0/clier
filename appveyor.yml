@@ -52,7 +52,7 @@ environment:
           BUILD_COVERAGE: ON
           CXX_STANDARD: 14
 install:
-    - cmd call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+    - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
     - cmd set PATH=%PATH%;%PYTHON%/Scripts/
     - cmd set PATH=%PATH%;C:/Program Files (x86)/Conan/conan
     
