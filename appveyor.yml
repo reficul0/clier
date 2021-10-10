@@ -43,12 +43,12 @@ for:
     matrix:
         only:
             - image: Visual Studio 2017
-        CONAN_VISUAL_VERSIONS: 15
-        CONAN_BUILD_TYPES: Release
-        TOOLCHAIN: msvc15
-        compiler: Visual Studio 15 2017
-        generator: "Visual Studio 15 2017"
-        CXX_STANDARD: 14
+            CONAN_VISUAL_VERSIONS: 15
+            CONAN_BUILD_TYPES: Release
+            TOOLCHAIN: msvc15
+            compiler: Visual Studio 15 2017
+            generator: "Visual Studio 15 2017"
+            CXX_STANDARD: 14
     environment:
         PYTHON: C:\\Python37
         CODECOV_TOKEN:
@@ -101,10 +101,10 @@ for:
     matrix:
         only:
             - image: Ubuntu
-        CXX: g++-7
-        CC: gcc-7
-        BUILD_COVERAGE: ON
-        CXX_STANDARD: 14
+            CXX: g++-7
+            CC: gcc-7
+            BUILD_COVERAGE: ON
+            CXX_STANDARD: 14
     
     environment:
         CODECOV_TOKEN:
