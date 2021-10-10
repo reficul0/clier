@@ -80,7 +80,6 @@ for:
       - cmd: dir
       - mkdir build && cd build
       - conan install ..
-      - echo y | conan package ..
       - cmake -A %platform% ..
         
     build_script:
@@ -132,7 +131,6 @@ for:
         - cmd: dir
         - mkdir build && cd build
         - conan install ..
-        - echo y | conan package ..
         - cmake -A %platform% -G "Visual Studio 15 2017" ..
         
     build_script:
