@@ -43,7 +43,7 @@ for:
           CXX_STANDARD: 14
           fast_finish: true
         only:
-            - image: Ubuntu
+            image: Ubuntu
     environment:
         CODECOV_TOKEN:
             secure: e8qe5I3ngSiMDPZsLfLBP7iCZJHrFD8gsXAYTkfQ1HL09UBk10s4vWNEDVMnFoM8
