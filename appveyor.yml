@@ -1,9 +1,5 @@
 version: 'build-{build}-{branch}'
 
-image:
-    - Ubuntu
-    - Visual Studio 2017
-    
 environment:
     matrix:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
@@ -55,7 +51,7 @@ for:
 -
     matrix:
         only:
-            - image: Ubuntu
+            - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
           
     environment:
         CODECOV_TOKEN:
@@ -103,7 +99,7 @@ for:
 -
     matrix:
         only:
-            - image: Visual Studio 2017
+            - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     environment:
         PYTHON: C:\\Python37
         CODECOV_TOKEN:
