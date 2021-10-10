@@ -67,6 +67,7 @@ for:
         - sudo python -m pip install conan_package_tools
         - conan user # It creates the conan data directory
         - conan --version
+        - conan remote list clean
         - conan remote add conan-center https://conan.bintray.com
         - conan remote add bincrafters https://api.bintray.com/conan/conan-community/conan
         - conan remote list
