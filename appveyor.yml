@@ -63,6 +63,7 @@ for:
 
     install:
         - echo "Downloading conan..."
+        - sudo apt-get install libpthread-stubs0-dev
         - sudo python -m pip install conan --upgrade
         - sudo python -m pip install conan_package_tools
         - conan --version
