@@ -34,6 +34,7 @@ branches:
     - develop
     
 ########## LINUX ##########
+for:
 -
     matrix:
         only:
@@ -86,7 +87,6 @@ branches:
           name: artifacts
 
 ########## WINDOWS ##########
-for:
 -
     matrix:
         only:
