@@ -37,13 +37,13 @@ branches:
 for:
 -
     matrix:
+        - CXX: g++-7
+          CC: gcc-7
+          BUILD_COVERAGE: ON
+          CXX_STANDARD: 14
+          fast_finish: true
         only:
             - image: Ubuntu
-        # - CXX: g++-7
-          # CC: gcc-7
-          # BUILD_COVERAGE: ON
-          # CXX_STANDARD: 14
-          # fast_finish: true
     environment:
         CODECOV_TOKEN:
             secure: e8qe5I3ngSiMDPZsLfLBP7iCZJHrFD8gsXAYTkfQ1HL09UBk10s4vWNEDVMnFoM8
