@@ -12,6 +12,7 @@ SET(BOOST_ROOT ${CONAN_BOOST_ROOT})
 SET(BOOST_INCLUDEDIR ${CONAN_INCLUDE_DIRS_BOOST})
 set(BOOST_LIBRARYDIR ${CONAN_LIB_DIRS_BOOST})
 set(BOOST_LIBRARY_DIR ${CONAN_LIB_DIRS_BOOST})
+
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.70.0 EXACT REQUIRED COMPONENTS regex filesystem system date_time chrono thread locale iostreams)
 
@@ -29,6 +30,8 @@ target_compile_definitions(${PROJECT_NAME}
 )
 
 if(UNIX)
-	find_library(pthread REQUIRED)
+	set(CMAKE_C_FLAGS " -fpermissive")
+	set(CMAKE_CXX_FLAGS " -fpermissive")
+	find_library(pthread STATIC)
 	target_link_libraries(${PROJECT_NAME} pthread)
 endif()

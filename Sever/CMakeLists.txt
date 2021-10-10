@@ -29,6 +29,8 @@ target_compile_definitions(${PROJECT_NAME}
 )
 
 if(UNIX)
-	find_library(pthread REQUIRED)
+	set(CMAKE_C_FLAGS " -fpermissive")
+	set(CMAKE_CXX_FLAGS " -fpermissive")
+	find_library(pthread STATIC)
 	target_link_libraries(${PROJECT_NAME} pthread)
 endif()

@@ -1,10 +1,24 @@
 version: 'build-{build}-{branch}'
 
-os: unstable
-image: Visual Studio 2017   # на этом VM-образе установлены все Visual Studio с 2008 по 2015
-   
+environment:
+    matrix:
+        - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+          CXX: g++-7
+          CC: gcc-7
+          BUILD_COVERAGE: ON
+          CXX_STANDARD: 14
+          fast_finish: true
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+          CONAN_VISUAL_VERSIONS: 15
+          CONAN_BUILD_TYPES: Release
+          TOOLCHAIN: msvc15
+          compiler: Visual Studio 15 2017
+          generator: "Visual Studio 15 2017"
+          CXX_STANDARD: 14
+          fast_finish: true
+    
 build:
-  verbosity: detailed
+    verbosity: detailed
   
 init:
     - git config --global core.autocrlf input
@@ -19,9 +33,6 @@ skip_commits:
       - .travis.yml
       - codecov.yml
       - .gitignore
-  
-matrix:
-    fast_finish: true # останавливаемся после возникновения ошибки в каком-то из заданий
 
 platform:
     - x64    
@@ -30,68 +41,108 @@ platform:
 configuration:
     - Release
 
-environment:
-    PYTHON: C:\\Python37
-    CODECOV_TOKEN:
-        secure: e8qe5I3ngSiMDPZsLfLBP7iCZJHrFD8gsXAYTkfQ1HL09UBk10s4vWNEDVMnFoM8
-    BUILD_CONFIG: $(configuration)
-    COVERALLS_REPO_TOKEN:
-        secure: /W0ImKAfLG96HA1nlkhhW0ntoJCRq7wps5
-    APPVEYOR_RDP_PASSWORD: 1234as!&
-    matrix:
-        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-          CONAN_VISUAL_VERSIONS: 15
-          CONAN_BUILD_TYPES: Release
-          TOOLCHAIN: msvc15
-          compiler: Visual Studio 15 2017
-          generator: "Visual Studio 15 2017"
-          CXX_STANDARD: 14
-        - CXX: g++-7
-          CC: gcc-7
-          APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-          BUILD_COVERAGE: ON
-          CXX_STANDARD: 14
-install:
-    - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
-    - set PATH=%PATH%;%PYTHON%/Scripts/
-    - set PATH=%PATH%;C:/Program Files (x86)/Conan/conan
-    
-    - cmd: echo "Downloading conan..."
-    - pip.exe install conan --upgrade
-    - pip.exe install conan_package_tools
-    - conan user # It creates the conan data directory
-    - cmd: conan --version
-    - conan remote add conan-center https://conan.bintray.com
-    - conan remote add bincrafters https://api.bintray.com/conan/conan-community/conan
-    - conan remote list
-    
-    - cmd: ECHO %PROCESSOR_ARCHITECTURE%
-    - cmd: reg query "HKLM\System\CurrentControlSet\Control\Session Manager\Environment" /v PROCESSOR_ARCHITECTURE
-    - cmd: echo %CONFIGURATION%
-
 branches:
   only:
     - master
     - develop
-
-before_build:
-  - cmd: dir
-  - mkdir build && cd build
-  - conan install ..
-  - echo y | conan package ..
-  - cmake -A %platform% -G "Visual Studio 15 2017" ..
     
-build_script:
-  - cmake --build .
+########## LINUX ##########
+for:
+-
+    matrix:
+        only:
+            - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+          
+    environment:
+        CODECOV_TOKEN:
+            secure: e8qe5I3ngSiMDPZsLfLBP7iCZJHrFD8gsXAYTkfQ1HL09UBk10s4vWNEDVMnFoM8
+        BUILD_CONFIG: $(configuration)
+        COVERALLS_REPO_TOKEN:
+            secure: /W0ImKAfLG96HA1nlkhhW0ntoJCRq7wps5
+        APPVEYOR_RDP_PASSWORD: 1234as!&
+
+    install:
+        - echo "Downloading conan..."
+        - sudo apt-get install libpthread-stubs0-dev
+        - sudo python -m pip install conan --upgrade
+        - sudo python -m pip install conan_package_tools
+        - conan --version
+        - conan remote clean
+        - conan remote add conan-center https://conan.bintray.com
+        - conan remote add bincrafters https://api.bintray.com/conan/conan-community/conan
+        - conan remote list
+        - conan user # It creates the conan data directory
+        
+        - echo %PROCESSOR_ARCHITECTURE%
+        - echo %CONFIGURATION%
 
 
-test_script:
-    - ctest --output-on-failure -C %configuration%
+    before_build:
+      - cmd: dir
+      - mkdir build && cd build
+      - conan install ..
+      - cmake ..
+        
+    build_script:
+      - cmake --build .
 
-on_finish:
-    #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+    test_script:
+        - ctest --output-on-failure -C %configuration%
 
-artifacts:
-    - path: ./build
-      name: artifacts
-      
+    on_finish:
+        #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+    artifacts:
+        - path: ./build
+          name: artifacts
+
+########## WINDOWS ##########
+-
+    matrix:
+        only:
+            - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    environment:
+        PYTHON: C:\\Python37
+        CODECOV_TOKEN:
+            secure: e8qe5I3ngSiMDPZsLfLBP7iCZJHrFD8gsXAYTkfQ1HL09UBk10s4vWNEDVMnFoM8
+        BUILD_CONFIG: $(configuration)
+        COVERALLS_REPO_TOKEN:
+            secure: /W0ImKAfLG96HA1nlkhhW0ntoJCRq7wps5
+        APPVEYOR_RDP_PASSWORD: 1234as!&
+
+    install:
+        - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+        - set PATH=%PATH%;%PYTHON%/Scripts/
+        - set PATH=%PATH%;C:/Program Files (x86)/Conan/conan
+    
+        - cmd: echo "Downloading conan..."
+        - pip install conan --upgrade
+        - pip install conan_package_tools
+        - conan user # It creates the conan data directory
+        - cmd: conan --version
+        - conan remote add conan-center https://conan.bintray.com
+        - conan remote add bincrafters https://api.bintray.com/conan/conan-community/conan
+        - conan remote list
+        
+        - cmd: ECHO %PROCESSOR_ARCHITECTURE%
+        - cmd: reg query "HKLM\System\CurrentControlSet\Control\Session Manager\Environment" /v PROCESSOR_ARCHITECTURE
+        - cmd: echo %CONFIGURATION%
+
+    before_build:
+        - cmd: dir
+        - mkdir build && cd build
+        - conan install ..
+        - cmake -A %platform% -G "Visual Studio 15 2017" ..
+        
+    build_script:
+        - cmake --build .
+
+    test_script:
+        - ctest --output-on-failure -C %configuration%
+
+    on_finish:
+        #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+    artifacts:
+        - path: ./build
+          name: artifacts
