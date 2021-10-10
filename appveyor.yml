@@ -114,8 +114,6 @@ for:
         COVERALLS_REPO_TOKEN:
             secure: /W0ImKAfLG96HA1nlkhhW0ntoJCRq7wps5
         APPVEYOR_RDP_PASSWORD: 1234as!&
-        CMAKE_CXX_COMPILER:g++-5
-        CMAKE_C_COMPILER:gcc-5
 
     install:
         - echo "Downloading conan..."
