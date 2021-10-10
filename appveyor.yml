@@ -2,6 +2,11 @@ version: 'build-{build}-{branch}'
 
 image:
     - Ubuntu
+      CXX: g++-7
+      CC: gcc-7
+      BUILD_COVERAGE: ON
+      CXX_STANDARD: 14
+      fast_finish: true
     - Visual Studio 2017
 
 build:
@@ -39,11 +44,6 @@ for:
     matrix:
         only:
             - image: Ubuntu
-              CXX: g++-7
-              CC: gcc-7
-              BUILD_COVERAGE: ON
-              CXX_STANDARD: 14
-              fast_finish: true
           
     environment:
         CODECOV_TOKEN:
