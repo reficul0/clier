@@ -16,23 +16,36 @@ Cliver is a C++ network client-server framework.
 Builds upon [Boost.ASIO](http://www.boost.org/) to provide a simple API for developers.
 
 ### Features
-* Server can send packets to clients
-* Server can accept many clients connections
-* Clients can handle server packets
+Features:
+* [x] Server can send packets to clients
+* [x] Clients can handle server packets
+* [x] Server can accept many clients connections
+* [x] Cross-platform compatible
 
 ## Installation
 
 ### Requirements
 
-* [Required] - [Boost (1.64 or newer)](http://www.boost.org/). In example its installed as nuget packet.
+* [Required] - [Conan](https://conan.io/).
+* [Installing by conan] - [Boost 1.70](http://www.boost.org/).
 
 ### Building on Windows
 
 ```shell
 - git clone git@github.com:reficul0/cliver.git
 - mkdir cliver.build && cd cliver.build
-- nuget restore ..\TcpCommunication.sln
-- msbuild ..\TcpCommunication.sln /m /property:Configuration=Release
+- conan install ..
+- cmake -A %platform% -G "Visual Studio 15 2017" ..
+- cmake --build .
+```
+### Building on Linux
+
+```bash
+$ git clone git@github.com:reficul0/cliver.git
+$ mkdir cliver.build && cd cliver.build
+$ conan install ..
+$ cmake ..
+$ cmake --build .
 ```
 ### Getting Started
 
