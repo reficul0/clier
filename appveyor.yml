@@ -58,15 +58,6 @@ for:
             secure: /W0ImKAfLG96HA1nlkhhW0ntoJCRq7wps5
         APPVEYOR_RDP_PASSWORD: 1234as!&
 
-    environment:
-        PYTHON: C:\\Python37
-        CODECOV_TOKEN:
-            secure: e8qe5I3ngSiMDPZsLfLBP7iCZJHrFD8gsXAYTkfQ1HL09UBk10s4vWNEDVMnFoM8
-        BUILD_CONFIG: $(configuration)
-        COVERALLS_REPO_TOKEN:
-            secure: /W0ImKAfLG96HA1nlkhhW0ntoJCRq7wps5
-        APPVEYOR_RDP_PASSWORD: 1234as!&
-        matrix:
     install:
         - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
         - set PATH=%PATH%;%PYTHON%/Scripts/
