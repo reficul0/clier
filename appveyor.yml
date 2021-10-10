@@ -97,7 +97,6 @@ for:
           name: artifacts
 
 ########## LINUX ##########
-for:
 -
     matrix:
         only:
