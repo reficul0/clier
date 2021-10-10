@@ -2,13 +2,25 @@ version: 'build-{build}-{branch}'
 
 image:
     - Ubuntu
+    - Visual Studio 2017
+
+matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       CXX: g++-7
       CC: gcc-7
       BUILD_COVERAGE: ON
       CXX_STANDARD: 14
       fast_finish: true
-    - Visual Studio 2017
-
+      
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      CONAN_VISUAL_VERSIONS: 15
+      CONAN_BUILD_TYPES: Release
+      TOOLCHAIN: msvc15
+      compiler: Visual Studio 15 2017
+      generator: "Visual Studio 15 2017"
+      CXX_STANDARD: 14
+      fast_finish: true
+    
 build:
     verbosity: detailed
   
@@ -92,13 +104,6 @@ for:
     matrix:
         only:
             - image: Visual Studio 2017
-        # - CONAN_VISUAL_VERSIONS: 15
-          # CONAN_BUILD_TYPES: Release
-          # TOOLCHAIN: msvc15
-          # compiler: Visual Studio 15 2017
-          # generator: "Visual Studio 15 2017"
-          # CXX_STANDARD: 14
-          # fast_finish: true
     environment:
         PYTHON: C:\\Python37
         CODECOV_TOKEN:
