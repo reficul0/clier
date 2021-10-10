@@ -1,8 +1,8 @@
 version: 'build-{build}-{branch}'
 
-image: 
-    - Visual Studio 2017
+image:
     - Ubuntu
+    - Visual Studio 2017
 
 build:
     verbosity: detailed
