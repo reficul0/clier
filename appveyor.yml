@@ -16,6 +16,7 @@ for:
               compiler: Visual Studio 15 2017
               generator: "Visual Studio 15 2017"
               CXX_STANDARD: 14
+              fast_finish: true
     #######
     build:
         verbosity: detailed
@@ -33,9 +34,6 @@ for:
           - .travis.yml
           - codecov.yml
           - .gitignore
-      
-    matrix:
-        fast_finish: true # останавливаемся после возникновения ошибки в каком-то из заданий
 
     platform:
         - x64    
@@ -105,6 +103,7 @@ for:
               CC: gcc-7
               BUILD_COVERAGE: ON
               CXX_STANDARD: 14
+              fast_finish: true
     #######
     build:
         verbosity: detailed
