@@ -30,8 +30,8 @@ target_compile_definitions(${PROJECT_NAME}
 )
 
 if(UNIX)
-	set(CMAKE_C_FLAGS " -Wall -Wno-write-strings")
-	set(CMAKE_CXX_FLAGS " -Wall -Wno-write-strings")
+	set(CMAKE_C_FLAGS " -fpermissive")
+	set(CMAKE_CXX_FLAGS " -fpermissive")
 	find_library(pthread STATIC)
 	target_link_libraries(${PROJECT_NAME} pthread)
 endif()
