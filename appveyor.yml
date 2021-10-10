@@ -121,9 +121,6 @@ for:
           - .travis.yml
           - codecov.yml
           - .gitignore
-      
-    matrix:
-        fast_finish: true # останавливаемся после возникновения ошибки в каком-то из заданий
 
     platform:
         - x64    
