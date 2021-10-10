@@ -33,6 +33,58 @@ branches:
     - master
     - develop
     
+########## LINUX ##########
+-
+    matrix:
+        only:
+            - image: Ubuntu
+        # - CXX: g++-7
+          # CC: gcc-7
+          # BUILD_COVERAGE: ON
+          # CXX_STANDARD: 14
+          # fast_finish: true
+    environment:
+        CODECOV_TOKEN:
+            secure: e8qe5I3ngSiMDPZsLfLBP7iCZJHrFD8gsXAYTkfQ1HL09UBk10s4vWNEDVMnFoM8
+        BUILD_CONFIG: $(configuration)
+        COVERALLS_REPO_TOKEN:
+            secure: /W0ImKAfLG96HA1nlkhhW0ntoJCRq7wps5
+        APPVEYOR_RDP_PASSWORD: 1234as!&
+
+    install:
+        - echo "Downloading conan..."
+        - sudo python -m pip install conan --upgrade
+        - sudo python -m pip install conan_package_tools
+        - conan user # It creates the conan data directory
+        - conan --version
+        - conan remote add conan-center https://conan.bintray.com
+        - conan remote add bincrafters https://api.bintray.com/conan/conan-community/conan
+        - conan remote list
+        
+        - echo %PROCESSOR_ARCHITECTURE%
+        - echo %CONFIGURATION%
+
+
+    before_build:
+      - cmd: dir
+      - mkdir build && cd build
+      - conan install ..
+      - echo y | conan package ..
+      - cmake -A %platform% ..
+        
+    build_script:
+      - cmake --build .
+
+    test_script:
+        - ctest --output-on-failure -C %configuration%
+
+    on_finish:
+        #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+    artifacts:
+        - path: ./build
+          name: artifacts
+
 ########## WINDOWS ##########
 for:
 -
@@ -82,58 +134,6 @@ for:
         
     build_script:
         - cmake --build .
-
-    test_script:
-        - ctest --output-on-failure -C %configuration%
-
-    on_finish:
-        #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-
-    artifacts:
-        - path: ./build
-          name: artifacts
-
-########## LINUX ##########
--
-    matrix:
-        only:
-            - image: Ubuntu
-        # - CXX: g++-7
-          # CC: gcc-7
-          # BUILD_COVERAGE: ON
-          # CXX_STANDARD: 14
-          # fast_finish: true
-    environment:
-        CODECOV_TOKEN:
-            secure: e8qe5I3ngSiMDPZsLfLBP7iCZJHrFD8gsXAYTkfQ1HL09UBk10s4vWNEDVMnFoM8
-        BUILD_CONFIG: $(configuration)
-        COVERALLS_REPO_TOKEN:
-            secure: /W0ImKAfLG96HA1nlkhhW0ntoJCRq7wps5
-        APPVEYOR_RDP_PASSWORD: 1234as!&
-
-    install:
-        - echo "Downloading conan..."
-        - sudo python -m pip install conan --upgrade
-        - sudo python -m pip install conan_package_tools
-        - conan user # It creates the conan data directory
-        - conan --version
-        - conan remote add conan-center https://conan.bintray.com
-        - conan remote add bincrafters https://api.bintray.com/conan/conan-community/conan
-        - conan remote list
-        
-        - echo %PROCESSOR_ARCHITECTURE%
-        - echo %CONFIGURATION%
-
-
-    before_build:
-      - cmd: dir
-      - mkdir build && cd build
-      - conan install ..
-      - echo y | conan package ..
-      - cmake -A %platform% ..
-        
-    build_script:
-      - cmake --build .
 
     test_script:
         - ctest --output-on-failure -C %configuration%
