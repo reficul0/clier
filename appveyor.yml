@@ -80,7 +80,7 @@ for:
       - cmd: dir
       - mkdir build && cd build
       - conan install ..
-      - cmake -A %platform% ..
+      - cmake ..
         
     build_script:
       - cmake --build .
