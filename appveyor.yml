@@ -3,6 +3,35 @@ version: 'build-{build}-{branch}'
 image: 
     - Visual Studio 2017
     - Ubuntu
+
+build:
+    verbosity: detailed
+  
+init:
+    - git config --global core.autocrlf input
+#clone_folder: c:\src # выбираем локальную директорию для клонирования
+shallow_clone: true # копируем только последний коммит, без истории (git clone --depth 1)
+
+skip_commits:
+    files:
+      - docs/*
+      - LICENSE
+      - README.md
+      - .travis.yml
+      - codecov.yml
+      - .gitignore
+
+platform:
+    - x64    
+    - x86
+
+configuration:
+    - Release
+
+branches:
+  only:
+    - master
+    - develop
     
 ########## WINDOWS ##########
 for:
@@ -10,43 +39,13 @@ for:
     matrix:
         only:
             - image: Visual Studio 2017
-        - CONAN_VISUAL_VERSIONS: 15
-          CONAN_BUILD_TYPES: Release
-          TOOLCHAIN: msvc15
-          compiler: Visual Studio 15 2017
-          generator: "Visual Studio 15 2017"
-          CXX_STANDARD: 14
-          fast_finish: true
-    #######
-    build:
-        verbosity: detailed
-      
-    init:
-        - git config --global core.autocrlf input
-    #clone_folder: c:\src # выбираем локальную директорию для клонирования
-    shallow_clone: true # копируем только последний коммит, без истории (git clone --depth 1)
-
-    skip_commits:
-        files:
-          - docs/*
-          - LICENSE
-          - README.md
-          - .travis.yml
-          - codecov.yml
-          - .gitignore
-
-    platform:
-        - x64    
-        - x86
-
-    configuration:
-        - Release
-
-    branches:
-      only:
-        - master
-        - develop
-    #######
+        # - CONAN_VISUAL_VERSIONS: 15
+          # CONAN_BUILD_TYPES: Release
+          # TOOLCHAIN: msvc15
+          # compiler: Visual Studio 15 2017
+          # generator: "Visual Studio 15 2017"
+          # CXX_STANDARD: 14
+          # fast_finish: true
     environment:
         PYTHON: C:\\Python37
         CODECOV_TOKEN:
@@ -99,41 +98,11 @@ for:
     matrix:
         only:
             - image: Ubuntu
-        - CXX: g++-7
-          CC: gcc-7
-          BUILD_COVERAGE: ON
-          CXX_STANDARD: 14
-          fast_finish: true
-    #######
-    build:
-        verbosity: detailed
-      
-    init:
-        - git config --global core.autocrlf input
-    #clone_folder: c:\src # выбираем локальную директорию для клонирования
-    shallow_clone: true # копируем только последний коммит, без истории (git clone --depth 1)
-
-    skip_commits:
-        files:
-          - docs/*
-          - LICENSE
-          - README.md
-          - .travis.yml
-          - codecov.yml
-          - .gitignore
-
-    platform:
-        - x64    
-        - x86
-
-    configuration:
-        - Release
-
-    branches:
-      only:
-        - master
-        - develop
-    #######
+        # - CXX: g++-7
+          # CC: gcc-7
+          # BUILD_COVERAGE: ON
+          # CXX_STANDARD: 14
+          # fast_finish: true
     environment:
         CODECOV_TOKEN:
             secure: e8qe5I3ngSiMDPZsLfLBP7iCZJHrFD8gsXAYTkfQ1HL09UBk10s4vWNEDVMnFoM8
