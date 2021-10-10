@@ -113,8 +113,8 @@ for:
 
     install:
         - echo "Downloading conan..."
-        - pip install conan --upgrade
-        - pip install conan_package_tools
+        - sudo python -m pip install conan --upgrade
+        - sudo python -m pip install conan_package_tools
         - conan user # It creates the conan data directory
         - conan --version
         - conan remote add conan-center https://conan.bintray.com
