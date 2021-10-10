@@ -30,6 +30,6 @@ target_compile_definitions(${PROJECT_NAME}
 )
 
 if(UNIX)
-	find_library(pthread REQUIRED)
+	find_library(pthread STATIC)
 	target_link_libraries(${PROJECT_NAME} pthread)
 endif()
