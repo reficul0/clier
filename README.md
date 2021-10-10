@@ -8,7 +8,6 @@ Cliver
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Freficul0%2Fcliver.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Freficul0%2Fcliver?ref=badge_shield)<br>
 ![language](https://img.shields.io/badge/language-c++-blue.svg)
 ![c++](https://img.shields.io/badge/std-c++14-blue.svg)
-![msvc2017](https://img.shields.io/badge/MSVC-2017-ff69b4.svg) 
 
 ## Overview
 
@@ -137,7 +136,7 @@ int main(int argc, char const* argv[]) {
 OS           | Compiler      | Status
 ------------ | ------------- | -------------
 Windows      | msvc15        | :white_check_mark: Working
-Linux        | gcc           | In the plans
+Linux        | gcc           | :white_check_mark: Working
 
 ## Contributing
 
