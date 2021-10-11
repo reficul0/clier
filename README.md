@@ -27,6 +27,7 @@ Features:
 ### Requirements
 
 * [Required] - [Conan](https://conan.io/).
+* [Required] - pthread(Linux only).
 * [Installing by conan] - [Boost 1.70](http://www.boost.org/).
 
 ### Building on Windows
