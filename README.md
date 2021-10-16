@@ -34,18 +34,18 @@ Features:
 
 ```shell
 - git clone git@github.com:reficul0/cliver.git
-- mkdir cliver.build && cd cliver.build
+- mkdir build && cd build
 - conan install ..
-- cmake -A %platform% -G "Visual Studio 15 2017" ..
+- cmake -A %platform% -G "Visual Studio 15 2017" -DBUILD_TESTS=OFF ..
 - cmake --build .
 ```
 ### Building on Linux
 
 ```bash
 $ git clone git@github.com:reficul0/cliver.git
-$ mkdir cliver.build && cd cliver.build
+$ mkdir build && cd build
 $ conan install ..
-$ cmake ..
+$ cmake -DBUILD_TESTS=OFF ..
 $ cmake --build .
 ```
 ### Getting Started
