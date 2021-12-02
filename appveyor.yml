@@ -68,8 +68,8 @@ for:
         - sudo python -m pip install conan_package_tools
         - conan --version
         - conan remote clean
-        - conan remote add conan-center https://conan.bintray.com
-        - conan remote add bincrafters https://api.bintray.com/conan/conan-community/conan
+        - conan remote add conan-center https://center.conan.io
+        - conan remote add bincrafters https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
         - conan remote list
         - conan user # It creates the conan data directory
         
@@ -120,8 +120,8 @@ for:
         - pip install conan_package_tools
         - conan user # It creates the conan data directory
         - cmd: conan --version
-        - conan remote add conan-center https://conan.bintray.com
-        - conan remote add bincrafters https://api.bintray.com/conan/conan-community/conan
+        - conan remote add conan-center https://center.conan.io
+        - conan remote add bincrafters https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
         - conan remote list
         
         - cmd: ECHO %PROCESSOR_ARCHITECTURE%
